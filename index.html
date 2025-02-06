@@ -178,7 +178,7 @@
     <style>
         .neon-button {
           position: fixed;
-          top: 20px;
+          top: 55px; /* Adjusted to vertically center with the larger logo */
           right: 20px;
           background: transparent;
           border: 2px solid #39FF14;
@@ -192,6 +192,9 @@
           text-shadow: 0 0 10px rgba(57, 255, 20, 0.5);
           box-shadow: 0 0 15px rgba(57, 255, 20, 0.2);
           z-index: 30;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
 
         .neon-button:hover {
@@ -207,8 +210,15 @@
 
         @media (max-width: 768px) {
             .neon-button {
+                top: 45px; /* Adjusted for 96px logo height */
                 font-size: 14px;
                 padding: 8px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .neon-button {
+                top: 35px; /* Adjusted for 64px logo height */
             }
         }
     </style>
