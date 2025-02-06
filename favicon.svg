@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Background square with slightly rounded corners -->
+  <rect width="32" height="32" rx="2" fill="#1c00ff"/>
+
+  <!-- 'E' in Anton font with sharp corners -->
+  <path
+    d="M10 6
+       h9 v4
+       h-5 v4
+       h5 v4
+       h-5 v4
+       h5 v4
+       h-9 v-20z
+       M10 6
+       h4 v20
+       h-4z"
+    fill="white"/>
+</svg>
