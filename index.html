@@ -153,10 +153,49 @@
             }
         }
     </style>
+
+    <style>
+        .neon-button {
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          background: transparent;
+          border: 2px solid #39FF14;
+          color: #39FF14;
+          padding: 10px 24px;
+          border-radius: 5px;
+          font-family: 'Roboto', Arial, sans-serif;
+          font-size: 16px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          text-shadow: 0 0 10px rgba(57, 255, 20, 0.5);
+          box-shadow: 0 0 15px rgba(57, 255, 20, 0.2);
+          z-index: 30;
+        }
+
+        .neon-button:hover {
+            background: #39FF14;
+            color: #000;
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(57, 255, 20, 0.4);
+        }
+
+        .neon-button:active {
+            transform: scale(0.95);
+        }
+
+        @media (max-width: 768px) {
+            .neon-button {
+                font-size: 14px;
+                padding: 8px 20px;
+            }
+        }
+    </style>
 </head>
 <body>
     <div id="game-container"></div>
     <a href="#" class="logo">Entitl.org</a>
+    <a href="https://entitl.ai" class="neon-button" taget="_blank">Powered by Entitl.ai</a>
     <div class="content">
         <h1>Lobby For AI Data Standards</h1>
         <div class="subtitle">Taking web publishers to The Hill</div>
