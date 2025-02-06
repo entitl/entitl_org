@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
     <meta property="og:description" content="We are an advocacy group to help web publishers navigate the era of blatant IP infringement by AI companies." />
-    <meta itemprop="image" property="og:image" content="https://entitl.org/image/copyright.png" />
+    <meta itemprop="image" property="og:image" content="https://entitl.org/image/logo.png" />
     <link rel="icon" type="image/svg+xml" href="https://entitl.org/favicon.svg">
     <style>
         body, html {
@@ -55,11 +55,32 @@
             position: fixed;
             top: 20px;
             left: 20px;
-            font-family: 'Anton', 'Impact', 'Arial Black', sans-serif;
-            font-size: 32px;
-            color: white;
             z-index: 30;
             text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 128px; /* Reduced from 40px */
+            width: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover img {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .logo img {
+                height: 28px; /* Reduced from 35px */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo img {
+                height: 24px; /* Added smaller size for very small screens */
+            }
         }
         .content {
             position: fixed;
@@ -105,8 +126,8 @@
         }
         .email-links {
             display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
+            flex-direction: column;
+            align-items: center;
             gap: 20px;
             margin-bottom: 10px;
         }
@@ -191,10 +212,45 @@
             }
         }
     </style>
+
+    <style>
+    .social-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #39FF14;
+      text-decoration: none;
+      font-size: 2.5vmin;  /* Reduced from 3vmin */
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+      transition: transform 0.3s ease;
+    }
+
+    .social-link:hover {
+      transform: scale(1.05);
+    }
+
+    .social-link svg {
+      width: 2.5vmin;  /* Reduced from 3vmin to match text */
+      height: 2.5vmin;
+    }
+
+    @media (max-width: 768px) {
+      .social-link {
+          font-size: 3vmin;  /* Reduced from 4vmin */
+      }
+      .social-link svg {
+          width: 3vmin;
+          height: 3vmin;
+      }
+    }
+    </style>
+
 </head>
 <body>
     <div id="game-container"></div>
-    <a href="#" class="logo">Entitl.org</a>
+    <a href="#" class="logo">
+      <img src="image/logo.png" alt="Entitl.org Logo">
+    </a>
     <a href="https://entitl.ai" class="neon-button" target="_blank">Powered by Entitl.ai</a>
     <div class="content">
         <h1>Lobby For AI Data Standards</h1>
@@ -203,8 +259,12 @@
     <div class="footer">
         <div class="email-links">
             <a href="mailto:lobby@entitl.ai?subject=Lobby%20for%20AI%20data%20standards&body=Count%20us%20in!%0D%0A%0D%0AAbout%20us%20-%20%3CPlease%20write%20a%20few%20words%3E">Join the AI Data Standards Initiative</a>
-            <!-- <a href="mailto:publisher@entitl.ai">Publisher</a>
-            <a href="mailto:investor@entitl.ai">Investor</a> -->
+            <a href="https://twitter.com/entitl_org" target="_blank" rel="noopener noreferrer" class="social-link">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+              </svg>
+              Follow us on X
+          </a>
         </div>
         <div class="copyright">© 2025 All Rights Reserved</div>
         <!-- <div class="powered-by">Powered by Fewcents</div> -->
