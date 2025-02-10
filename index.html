@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="https://entitl.org/js/gtag.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Data Standards Initiative</title>
@@ -10,6 +9,13 @@
     <meta property="og:description" content="We are an advocacy group to help web publishers navigate the era of blatant IP infringement by AI companies." />
     <meta itemprop="image" property="og:image" content="https://entitl.org/image/logo.png" />
     <link rel="icon" type="image/svg+xml" href="https://entitl.org/favicon.svg">
+
+    <!-- Load and initialize GTM head script -->
+    <script type="module">
+        import { initGTMHead } from '/js/gtm-head.js';
+        initGTMHead('GTM-WHPZDWDV'); // Replace with your GTM ID
+    </script>
+
     <style>
         body, html {
             margin: 0;
@@ -257,6 +263,12 @@
 
 </head>
 <body>
+    <!-- Load and initialize GTM body script -->
+    <script type="module">
+        import { initGTMBody } from '/js/gtm-body.js';
+        initGTMBody('GTM-WHPZDWDV'); // Replace with your GTM ID
+    </script>
+
     <div id="game-container"></div>
     <a href="#" class="logo">
       <img src="image/logo.png" alt="Entitl.org Logo">
