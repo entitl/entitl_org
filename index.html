@@ -153,13 +153,25 @@
             color: #666;
         }
 
-        .publication-logo {
-            width: 24px;
-            height: 24px;
+        .publication-logo-wrapper {
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             border: 1px solid #39FF14;
             margin-right: 8px;
-            vertical-align: middle;
+            background-color: white;
+            padding: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .publication-logo {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
         }
 
         .meta-left {
@@ -359,7 +371,9 @@
               <div class="news-card-content">
                   <div class="news-card-meta">
                     <div class="meta-left">
-                        <img src="https://www.wired.com/verso/static/wired-us/assets/logo-header.svg" alt="WIRED logo" class="publication-logo">
+                        <div class="publication-logo-wrapper">
+                            <img src="https://www.wired.com/verso/static/wired-us/assets/logo-header.svg" alt="WIRED logo" class="publication-logo">
+                        </div>
                         <span class="publication-name">WIRED</span>
                     </div>
                     <div class="meta-right">
@@ -377,7 +391,9 @@
               <div class="news-card-content">
                   <div class="news-card-meta">
                     <div class="meta-left">
-                        <img src="https://images.yourstory.com/cs/images/the-captable/article/thecaptable_logo.svg" alt="The CapTable logo" class="publication-logo">
+                        <div class="publication-logo-wrapper">
+                            <img src="https://images.yourstory.com/cs/images/the-captable/article/thecaptable_logo.svg" alt="The CapTable logo" class="publication-logo">
+                        </div>
                         <span class="publication-name">The CapTable</span>
                     </div>
                     <div class="meta-right">
@@ -395,7 +411,9 @@
               <div class="news-card-content">
                   <div class="news-card-meta">
                     <div class="meta-left">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/BBC_Logo_2021.svg/560px-BBC_Logo_2021.svg.png?20230729093433" alt="BBC logo" class="publication-logo">
+                        <div class="publication-logo-wrapper">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/BBC_Logo_2021.svg/560px-BBC_Logo_2021.svg.png?20230729093433" alt="BBC logo" class="publication-logo">
+                        </div>
                         <span class="publication-name">BBC</span>
                     </div>
                     <div class="meta-right">
