@@ -278,7 +278,7 @@
           title: 'AI Bot Detected!',
           content: `
             <ul>
-              <li>Confidence: You are Bot! Tried https://entitl.ai?</li>
+              <li>Confidence: You are a Bot! You can license data from https://entitl.ai.</li>
               <li>Confidence: ${(detection.confidence * 100).toFixed(1)}%</li>
               <li>User Agent Match: ${detection.userAgentMatch ? 'Yes' : 'No'}</li>
               <li>IP Match: ${detection.ipMatch ? 'Yes' : 'No'}</li>
@@ -290,7 +290,7 @@
         this.toastManager.show({
           type: 'success',
           title: 'No AI Bot Detected',
-          content: '<p class="content">You are Human! :)</p>',
+          content: '<p class="content">You are Human, not a Bot! :)</p>',
           duration: 2000
         });
       }
