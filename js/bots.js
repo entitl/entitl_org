@@ -191,11 +191,9 @@
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'Accept': 'application/json',
-              'X-Requested-With': 'XMLHttpRequest'
+              'Accept': 'application/json'
             },
             body: JSON.stringify(this.getClientInfo()),
-            credentials: 'include',
             mode: 'cors',
             signal: controller.signal
           });
@@ -290,5 +288,4 @@
   window.BotDetector = BotDetector;
 })();
 
-// Single line initialization and usage:
 new BotDetector().checkForBot();
