@@ -1,13 +1,15 @@
-(function() {
-
+(async function() {
     function showToast(message) {
-          const toast = document.getElementById("toast");
-          toast.textContent = message;
-          toast.className = "toast show";
-
-          setTimeout(() => {
-              toast.className = "toast";
-          }, 2000);
+        const toast = document.getElementById("toast");
+        if (!toast) {
+            console.error('Toast element not found');
+            return;
+        }
+        toast.textContent = message;
+        toast.className = "toast show";
+        setTimeout(() => {
+            toast.className = "toast";
+        }, 2000);
     }
 
     async function checkBot() {
@@ -20,25 +22,29 @@
                 body: JSON.stringify({
                     userAgent: navigator.userAgent,
                     domain: window.location.hostname,
-                    referer: document.referrer,
-                    // Add any other relevant headers/data
+                    referer: document.referrer
                 })
             });
 
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
             const { isBot } = await response.json();
 
-            // if (isBot) {
-            //     document.body.innerHTML = '<div style="text-align:center;padding:50px"><h1>Access Denied</h1></div>';
-            // }
             if (!isBot) {
-                showToast('Not a Bot!');
+                showToast('NOT a bot!');
             }
         } catch (error) {
-            // Fail open - if check fails, allow access
             console.error('Bot check failed:', error);
+            showToast('Error checking bot status');
         }
     }
 
-    // Run check immediately
-    checkBot();
+    try {
+        await checkBot();
+    } catch (error) {
+        console.error('Failed to run bot check:', error);
+        showToast('Failed to run bot check');
+    }
 })();
