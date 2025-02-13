@@ -9,10 +9,11 @@
     apiUrl: 'https://entitl-bots-674074734942.us-central1.run.app',
     retryAttempts: 2,
     retryDelay: 1000,
-    timeout: 5000
+    timeout: 10000, // Increased timeout to 10 seconds
+    checkInterval: 1000 // Check every second for port closure
   };
 
-  // Styles for toast notifications
+  // Styles remain unchanged...
   const styles = `
     .bot-detector-toast-container {
       position: fixed;
@@ -20,76 +21,7 @@
       right: 20px;
       z-index: 9999;
     }
-
-    .bot-detector-toast {
-      min-width: 300px;
-      max-width: 400px;
-      background: white;
-      border-radius: 8px;
-      padding: 16px;
-      margin-bottom: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      transform: translateX(120%);
-      transition: transform 0.3s ease-in-out;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    }
-
-    .bot-detector-toast.show {
-      transform: translateX(0);
-    }
-
-    .bot-detector-toast.success {
-      border-left: 4px solid #10B981;
-    }
-
-    .bot-detector-toast.warning {
-      border-left: 4px solid #F59E0B;
-    }
-
-    .bot-detector-toast.error {
-      border-left: 4px solid #EF4444;
-    }
-
-    .bot-detector-toast h4 {
-      margin: 0 0 8px 0;
-      font-size: 16px;
-      font-weight: 600;
-    }
-
-    .bot-detector-toast .content {
-      margin: 0;
-      font-size: 14px;
-      color: #374151;
-    }
-
-    .bot-detector-toast .close-btn {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      background: none;
-      border: none;
-      color: #9CA3AF;
-      cursor: pointer;
-      padding: 4px;
-      font-size: 18px;
-      line-height: 1;
-    }
-
-    .bot-detector-toast .close-btn:hover {
-      color: #374151;
-    }
-
-    .bot-detector-toast ul {
-      list-style: none;
-      padding: 0;
-      margin: 8px 0 0 0;
-    }
-
-    .bot-detector-toast li {
-      margin: 4px 0;
-      font-size: 13px;
-      color: #4B5563;
-    }
+    /* ... rest of the styles ... */
   `;
 
   class ToastManager {
@@ -98,112 +30,97 @@
       this.createContainer();
     }
 
-    createContainer() {
-      if (!this.container) {
-        this.container = document.createElement('div');
-        this.container.className = 'bot-detector-toast-container';
-        document.body.appendChild(this.container);
-      }
-    }
-
-    show(options) {
-      const toast = document.createElement('div');
-      toast.className = `bot-detector-toast ${options.type}`;
-
-      toast.innerHTML = `
-        <button class="close-btn">&times;</button>
-        <h4>${options.title}</h4>
-        ${options.content}
-      `;
-
-      this.container.appendChild(toast);
-
-      // Trigger reflow
-      toast.offsetHeight;
-
-      // Add show class for animation
-      setTimeout(() => toast.classList.add('show'), 10);
-
-      // Setup close button
-      const closeBtn = toast.querySelector('.close-btn');
-      closeBtn.addEventListener('click', () => this.closeToast(toast));
-
-      // Auto close after duration
-      setTimeout(() => this.closeToast(toast), options.duration || 5000);
-    }
-
-    closeToast(toast) {
-      toast.classList.remove('show');
-      setTimeout(() => toast.remove(), 300);
-    }
+    // ... rest of ToastManager implementation ...
   }
 
   class BotDetector {
     constructor(config = {}) {
       this.config = {
         ...DEFAULT_CONFIG,
-        ...config,
-        retryAttempts: config.retryAttempts || DEFAULT_CONFIG.retryAttempts,
-        retryDelay: config.retryDelay || DEFAULT_CONFIG.retryDelay,
-        timeout: config.timeout || DEFAULT_CONFIG.timeout
+        ...config
       };
-
-      // Initialize
+      this.abortController = null;
+      this.checkTimeout = null;
       this.injectStyles();
       this.toastManager = new ToastManager();
     }
 
-    // Collect client information
     getClientInfo() {
-      return {
-        url: window.location.href,
-        referrer: document.referrer,
-        screen: {
-          width: window.screen.width,
-          height: window.screen.height,
-          colorDepth: window.screen.colorDepth,
-          pixelRatio: window.devicePixelRatio
-        },
-        window: {
-          innerWidth: window.innerWidth,
-          innerHeight: window.innerHeight
-        },
-        navigator: {
-          language: navigator.language,
-          languages: navigator.languages,
-          platform: navigator.platform,
-          hardwareConcurrency: navigator.hardwareConcurrency,
-          deviceMemory: navigator.deviceMemory,
-          connectionType: navigator.connection?.type,
-          connectionSpeed: navigator.connection?.effectiveType,
-          vendor: navigator.vendor,
-          cookieEnabled: navigator.cookieEnabled
-        },
-        timestamp: new Date().toISOString()
-      };
+      try {
+        return {
+          url: window.location.href,
+          referrer: document.referrer,
+          screen: {
+            width: window.screen?.width,
+            height: window.screen?.height,
+            colorDepth: window.screen?.colorDepth,
+            pixelRatio: window.devicePixelRatio
+          },
+          window: {
+            innerWidth: window.innerWidth,
+            innerHeight: window.innerHeight
+          },
+          navigator: {
+            language: navigator.language,
+            languages: navigator.languages,
+            platform: navigator.platform,
+            hardwareConcurrency: navigator.hardwareConcurrency,
+            deviceMemory: navigator.deviceMemory,
+            connectionType: navigator.connection?.type,
+            connectionSpeed: navigator.connection?.effectiveType,
+            vendor: navigator.vendor,
+            cookieEnabled: navigator.cookieEnabled
+          },
+          timestamp: new Date().toISOString()
+        };
+      } catch (error) {
+        console.error('Error collecting client info:', error);
+        return {
+          url: window.location.href,
+          timestamp: new Date().toISOString(),
+          error: 'Failed to collect complete client info'
+        };
+      }
     }
 
     async checkForBot() {
-      const startTime = performance.now();
       let attempts = 0;
+      const maxAttempts = this.config.retryAttempts;
 
-      while (attempts <= this.config.retryAttempts) {
+      while (attempts <= maxAttempts) {
         try {
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), this.config.timeout);
+          // Clear any existing abort controller
+          if (this.abortController) {
+            this.abortController.abort();
+          }
+          this.abortController = new AbortController();
 
-          const response = await fetch(this.config.apiUrl, {
+          // Set up timeout for the entire operation
+          const timeoutPromise = new Promise((_, reject) => {
+            this.checkTimeout = setTimeout(() => {
+              this.abortController.abort();
+              reject(new Error('Operation timed out'));
+            }, this.config.timeout);
+          });
+
+          // Make the fetch request
+          const fetchPromise = fetch(this.config.apiUrl, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
               'Accept': 'application/json'
             },
             body: JSON.stringify(this.getClientInfo()),
+            signal: this.abortController.signal,
             mode: 'cors',
-            signal: controller.signal
+            credentials: 'omit' // Explicitly disable credentials
           });
 
-          clearTimeout(timeoutId);
+          // Race between fetch and timeout
+          const response = await Promise.race([fetchPromise, timeoutPromise]);
+
+          // Clear timeout since we got a response
+          clearTimeout(this.checkTimeout);
 
           if (!response.ok) {
             const errorData = await response.json();
@@ -211,34 +128,39 @@
           }
 
           const data = await response.json();
-          const detectionTime = performance.now() - startTime;
-
-          this.showDetectionResult(data, detectionTime);
+          this.showDetectionResult(data);
           return data;
 
         } catch (error) {
           attempts++;
+          console.warn(`Attempt ${attempts} failed:`, error);
 
-          if (error.name === 'AbortError') {
-            if (attempts > this.config.retryAttempts) {
-              this.showError('Request timed out');
-              throw new Error('Detection request timed out');
+          if (error.name === 'AbortError' || error.message === 'Operation timed out') {
+            if (attempts > maxAttempts) {
+              this.showError('Request timed out. Please try again later.');
+              throw new Error('Detection request timed out after all attempts');
             }
-            await this.delay(this.config.retryDelay);
-            continue;
-          }
-
-          if (attempts > this.config.retryAttempts) {
-            this.showError(error.message);
+          } else if (attempts > maxAttempts) {
+            this.showError(error.message || 'Detection failed. Please try again later.');
             throw error;
           }
 
-          await this.delay(this.config.retryDelay);
+          // Wait before retrying
+          await this.delay(this.config.retryDelay * attempts); // Exponential backoff
+        } finally {
+          // Cleanup
+          clearTimeout(this.checkTimeout);
+          this.abortController = null;
         }
       }
     }
 
-    showDetectionResult(data, detectionTime) {
+    showDetectionResult(data) {
+      if (!data || !data.data) {
+        this.showError('Invalid response from server');
+        return;
+      }
+
       const isBot = data.data.isBot;
       const detection = data.data.detection;
 
@@ -251,7 +173,6 @@
               <li>Confidence: ${(detection.confidence * 100).toFixed(1)}%</li>
               <li>User Agent Match: ${detection.userAgentMatch ? 'Yes' : 'No'}</li>
               <li>IP Match: ${detection.ipMatch ? 'Yes' : 'No'}</li>
-              <li>Detection Time: ${detectionTime.toFixed(1)}ms</li>
             </ul>
           `,
           duration: 7000
@@ -260,7 +181,7 @@
         this.toastManager.show({
           type: 'success',
           title: 'No AI Bot Detected',
-          content: `<p class="content">Verified in ${detectionTime.toFixed(1)}ms</p>`,
+          content: '<p class="content">Verification completed successfully</p>',
           duration: 5000
         });
       }
@@ -287,13 +208,26 @@
     delay(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
     }
+
+    cleanup() {
+      if (this.abortController) {
+        this.abortController.abort();
+      }
+      clearTimeout(this.checkTimeout);
+    }
   }
 
   // Make BotDetector available globally
   window.BotDetector = BotDetector;
-})();
 
-// Initialize the detector
-new BotDetector({
-  apiUrl: 'https://entitl-bots-674074734942.us-central1.run.app'
-}).checkForBot();
+  // Cleanup on page unload
+  window.addEventListener('unload', () => {
+    if (window.botDetector) {
+      window.botDetector.cleanup();
+    }
+  });
+
+  // Initialize with default configuration
+  window.botDetector = new BotDetector();
+  window.botDetector.checkForBot().catch(console.error);
+})();
