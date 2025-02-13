@@ -16,8 +16,8 @@
         try {
             const response = await fetch('https://us-central1-bots-framework.cloudfunctions.net/bots-check', {
                 method: 'POST',
-                mode: 'cors', // Explicitly state CORS mode
-                credentials: 'same-origin',
+                mode: 'cors',
+                credentials: 'omit', // Changed from same-origin since we're using cross-origin
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json'
