@@ -6,7 +6,7 @@
 (() => {
   // Internal configuration
   const API_CONFIG = {
-    url: 'https://us-central1-pixel-432500.cloudfunctions.net/entitl-bots'
+    url: 'https://entitl-bots-674074734942.us-central1.run.app'
   };
 
   // Styles for toast notifications
