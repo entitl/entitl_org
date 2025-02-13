@@ -194,7 +194,8 @@
               'Accept': 'application/json'
             },
             body: JSON.stringify(this.getClientInfo()),
-            mode: 'cors'
+            mode: 'cors',
+            signal: controller.signal
           });
 
           clearTimeout(timeoutId);
