@@ -1,7 +1,7 @@
 (async function() {
-    // Add toast styles via JavaScript
+    // Add toast styles via JavaScript with entitl- prefix
     const styles = `
-        .toast {
+        .entitl-toast {
             position: fixed;
             top: 20px;
             right: 20px;
@@ -15,27 +15,27 @@
             opacity: 0;
         }
 
-        .toast.show {
+        .entitl-toast.entitl-show {
             transform: translateX(0);
             opacity: 1;
         }
 
-        .toast.info {
+        .entitl-toast.entitl-info {
             background-color: #2196F3;
             color: white;
         }
 
-        .toast.success {
+        .entitl-toast.entitl-success {
             background-color: #4CAF50;
             color: white;
         }
 
-        .toast.warning {
+        .entitl-toast.entitl-warning {
             background-color: #FFC107;
             color: black;
         }
 
-        .toast.error {
+        .entitl-toast.entitl-error {
             background-color: #F44336;
             color: white;
         }
@@ -48,7 +48,8 @@
 
     // Create toast container and add to document
     const toastContainer = document.createElement("div");
-    toastContainer.id = "toast";
+    toastContainer.id = "entitl-toast";
+    toastContainer.className = "entitl-toast";
     document.body.appendChild(toastContainer);
 
     /**
@@ -56,7 +57,7 @@
      * @param {Object} config Toast configuration
      */
     function showToast({ message, type = 'info', duration = 3000, requestId = null }) {
-        const toast = document.getElementById("toast");
+        const toast = document.getElementById("entitl-toast");
 
         // Clear any existing timeouts
         if (toast.timeoutId) {
@@ -71,13 +72,13 @@
 
         // Update toast content and classes
         toast.textContent = toastMessage;
-        toast.className = "toast"; // Reset classes
+        toast.className = "entitl-toast"; // Reset classes
 
         // Force reflow to ensure transition works
         void toast.offsetWidth;
 
         // Add show class and type
-        toast.className = `toast show ${type}`;
+        toast.className = `entitl-toast entitl-show entitl-${type}`;
 
         // Set timeout to hide toast
         toast.timeoutId = setTimeout(() => {
@@ -86,7 +87,7 @@
 
             // Remove classes after transition
             setTimeout(() => {
-                toast.className = "toast";
+                toast.className = "entitl-toast";
             }, 300); // Match transition duration
         }, duration);
     }
