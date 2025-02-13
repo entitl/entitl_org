@@ -145,7 +145,7 @@
       }
     } else {
       // Log successful human detection
-      this.showToast('You are not a restricted Bot! :)', 'success');
+      this.showToast('You seem Human! :)', 'success');
     }
 
     return data;
@@ -159,7 +159,7 @@
   // Show bot detected toast
   BotDetector.prototype.showBotDetectedToast = function(detection) {
     var content = [
-      'You are a Bot! Try https://entitl.ai',
+      'You seem Bot-tish! Try https://entitl.ai',
       'Confidence: ' + (detection.confidence * 100).toFixed(1) + '%',
       'User Agent Match: ' + (detection.userAgentMatch ? 'Yes' : 'No'),
       'IP Match: ' + (detection.ipMatch ? 'Yes' : 'No')
