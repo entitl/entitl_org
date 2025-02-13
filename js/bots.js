@@ -1,4 +1,17 @@
 (async function() {
+    // Constants
+    const CONFIG = {
+        ENDPOINT: 'https://entitl-org-bots-674074734942.us-central1.run.app',
+        TOAST_DURATION: {
+            DEFAULT: 3000,
+            ERROR: 5000
+        },
+        ANIMATION: {
+            DURATION: 300,
+            OFFSET: '150%'
+        }
+    };
+
     // Add toast styles via JavaScript with entitl- prefix
     const styles = `
         .entitl-toast {
@@ -13,6 +26,8 @@
             transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
             z-index: 1000;
             opacity: 0;
+            max-width: 80vw;
+            word-break: break-word;
         }
 
         .entitl-toast.entitl-show {
@@ -41,23 +56,25 @@
         }
     `;
 
-    // Create and inject styles
-    const styleSheet = document.createElement("style");
-    styleSheet.textContent = styles;
-    document.head.appendChild(styleSheet);
+    // Initialize toast functionality
+    function initializeToast() {
+        const styleSheet = document.createElement("style");
+        styleSheet.textContent = styles;
+        document.head.appendChild(styleSheet);
 
-    // Create toast container and add to document
-    const toastContainer = document.createElement("div");
-    toastContainer.id = "entitl-toast";
-    toastContainer.className = "entitl-toast";
-    document.body.appendChild(toastContainer);
+        const toastContainer = document.createElement("div");
+        toastContainer.id = "entitl-toast";
+        toastContainer.className = "entitl-toast";
+        document.body.appendChild(toastContainer);
+    }
 
     /**
      * Shows a toast message to the user
      * @param {Object} config Toast configuration
      */
-    function showToast({ message, type = 'info', duration = 3000, requestId = null }) {
+    function showToast({ message, type = 'info', duration = CONFIG.TOAST_DURATION.DEFAULT, requestId = null }) {
         const toast = document.getElementById("entitl-toast");
+        if (!toast) return; // Guard clause
 
         // Clear any existing timeouts
         if (toast.timeoutId) {
@@ -65,10 +82,7 @@
         }
 
         // Build toast message
-        let toastMessage = message;
-        if (requestId) {
-            toastMessage += ` (Request ID: ${requestId})`;
-        }
+        const toastMessage = requestId ? `${message} (Request ID: ${requestId})` : message;
 
         // Update toast content and classes
         toast.textContent = toastMessage;
@@ -82,13 +96,13 @@
 
         // Set timeout to hide toast
         toast.timeoutId = setTimeout(() => {
-            toast.style.transform = 'translateX(150%)';
+            toast.style.transform = `translateX(${CONFIG.ANIMATION.OFFSET})`;
             toast.style.opacity = '0';
 
             // Remove classes after transition
             setTimeout(() => {
                 toast.className = "entitl-toast";
-            }, 300); // Match transition duration
+            }, CONFIG.ANIMATION.DURATION);
         }, duration);
     }
 
@@ -98,7 +112,7 @@
      * @returns {Object} Formatted message and type
      */
     function formatBotResult(result) {
-        if (!result.isBot) {
+        if (!result?.isBot) {
             return {
                 message: 'Human visitor detected',
                 type: 'success'
@@ -113,7 +127,7 @@
         }
 
         return {
-            message: `Suspicious bot detected: ${result.category} - ${result.reason || 'unknown pattern'}`,
+            message: `Suspicious bot detected: ${result.category}${result.reason ? ` - ${result.reason}` : ''}`,
             type: 'warning'
         };
     }
@@ -127,18 +141,14 @@
         let errorData;
         try {
             errorData = await response.json();
-        } catch (e) {
-            throw new Error(response.statusText || 'Unknown error occurred');
+        } catch {
+            throw new Error(`HTTP ${response.status}: ${response.statusText || 'Unknown error occurred'}`);
         }
 
         const error = new Error(errorData.error || 'Unknown error occurred');
         error.status = response.status;
         error.requestId = errorData.requestId;
-
-        // Add additional error details if available
-        if (errorData.details) {
-            error.details = errorData.details;
-        }
+        error.details = errorData.details;
 
         throw error;
     }
@@ -150,35 +160,30 @@
      */
     function formatErrorMessage(error) {
         const baseMessage = error.message;
-        let type = 'error';
 
-        switch (error.status) {
-            case 400:
-                return {
-                    message: `Invalid request: ${error.details?.join(', ') || baseMessage}`,
-                    type: 'warning'
-                };
-            case 403:
-                return {
-                    message: 'Access denied',
-                    type: 'warning'
-                };
-            case 429:
-                return {
-                    message: 'Rate limit exceeded. Please try again later.',
-                    type: 'warning'
-                };
-            case 405:
-                return {
-                    message: 'Method not allowed',
-                    type: 'warning'
-                };
-            default:
-                return {
-                    message: baseMessage,
-                    type: 'error'
-                };
-        }
+        const errorMap = {
+            400: {
+                message: `Invalid request: ${error.details?.join(', ') || baseMessage}`,
+                type: 'warning'
+            },
+            403: {
+                message: 'Access denied',
+                type: 'warning'
+            },
+            429: {
+                message: 'Rate limit exceeded. Please try again later.',
+                type: 'warning'
+            },
+            405: {
+                message: 'Method not allowed',
+                type: 'warning'
+            }
+        };
+
+        return errorMap[error.status] || {
+            message: baseMessage,
+            type: 'error'
+        };
     }
 
     /**
@@ -187,7 +192,7 @@
      */
     async function checkBot() {
         try {
-            const response = await fetch('https://entitl-org-bots-674074734942.us-central1.run.app', {
+            const response = await fetch(CONFIG.ENDPOINT, {
                 method: 'POST',
                 mode: 'cors',
                 credentials: 'omit',
@@ -207,45 +212,52 @@
             }
 
             const result = await response.json();
-            const formattedResult = formatBotResult(result);
+
+            if (!result?.success) {
+                throw new Error(result.error || 'Invalid response format');
+            }
+
+            const formattedResult = formatBotResult(result.data);
 
             showToast({
                 message: formattedResult.message,
-                type: formattedResult.type
+                type: formattedResult.type,
+                requestId: result.requestId
             });
 
-            return result;
+            return result.data;
 
         } catch (error) {
-            console.error('Bot check failed:', error);
+            console.error('Bot check failed:', {
+                error: {
+                    message: error.message,
+                    status: error.status,
+                    requestId: error.requestId
+                },
+                timestamp: new Date().toISOString()
+            });
 
             const formattedError = formatErrorMessage(error);
             showToast({
                 message: formattedError.message,
                 type: formattedError.type,
                 requestId: error.requestId,
-                duration: 5000 // Show errors longer
+                duration: CONFIG.TOAST_DURATION.ERROR
             });
 
             throw error;
         }
     }
 
+    // Initialize and run
     try {
+        initializeToast();
         const result = await checkBot();
         console.debug('Bot check complete:', {
             result,
             timestamp: new Date().toISOString()
         });
     } catch (error) {
-        // Additional error telemetry could be added here
-        console.error('Bot check failed:', {
-            error: {
-                message: error.message,
-                status: error.status,
-                requestId: error.requestId
-            },
-            timestamp: new Date().toISOString()
-        });
+        // Error already handled in checkBot()
     }
 })();
