@@ -190,74 +190,100 @@
      * Performs the bot detection check
      * @returns {Promise<Object>} Bot detection result
      */
-    async function checkBot() {
-        try {
-            const response = await fetch(CONFIG.ENDPOINT, {
-                method: 'POST',
-                mode: 'cors',
-                credentials: 'omit',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({
-                    userAgent: navigator.userAgent,
-                    domain: window.location.hostname,
-                    referer: document.referrer
-                })
-            });
+     async function checkBot() {
+       try {
+           // Ensure we're running in a browser environment
+           if (typeof window === 'undefined' || !window.fetch) {
+               throw new Error('Environment not supported');
+           }
 
-            if (!response.ok) {
-                await handleErrorResponse(response);
-            }
+           // Validate required browser APIs
+           if (!navigator?.userAgent || !window?.location?.hostname) {
+               throw new Error('Required browser APIs not available');
+           }
 
-            const result = await response.json();
+           const response = await fetch(CONFIG.ENDPOINT, {
+               method: 'POST',
+               mode: 'cors',
+               credentials: 'omit',
+               headers: {
+                   'Content-Type': 'application/json',
+                   'Accept': 'application/json'
+               },
+               body: JSON.stringify({
+                   userAgent: navigator.userAgent,
+                   domain: window.location.hostname,
+                   referer: document.referrer || ''
+               })
+           });
 
-            if (!result?.success) {
-                throw new Error(result.error || 'Invalid response format');
-            }
+           // Network error handling
+           if (!response.ok) {
+               const errorText = await response.text();
+               let errorData;
 
-            const formattedResult = formatBotResult(result.data);
+               try {
+                   errorData = JSON.parse(errorText);
+               } catch {
+                   errorData = { error: `HTTP ${response.status}: ${errorText || response.statusText}` };
+               }
 
-            showToast({
-                message: formattedResult.message,
-                type: formattedResult.type,
-                requestId: result.requestId
-            });
+               const error = new Error(errorData.error || 'Unknown error occurred');
+               error.status = response.status;
+               error.requestId = errorData.requestId;
+               error.details = errorData.details;
+               throw error;
+           }
 
-            return result.data;
+           const result = await response.json();
 
-        } catch (error) {
-            console.error('Bot check failed:', {
-                error: {
-                    message: error.message,
-                    status: error.status,
-                    requestId: error.requestId
-                },
-                timestamp: new Date().toISOString()
-            });
+           if (!result?.success || !result?.data) {
+               throw new Error('Invalid response format');
+           }
 
-            const formattedError = formatErrorMessage(error);
-            showToast({
-                message: formattedError.message,
-                type: formattedError.type,
-                requestId: error.requestId,
-                duration: CONFIG.TOAST_DURATION.ERROR
-            });
+           const formattedResult = formatBotResult(result.data);
 
-            throw error;
-        }
-    }
+           showToast({
+               message: formattedResult.message,
+               type: formattedResult.type,
+               requestId: result.requestId
+           });
+
+           return result.data;
+
+       } catch (error) {
+           console.error('Bot check failed:', {
+               error: {
+                   message: error.message,
+                   status: error.status,
+                   requestId: error.requestId
+               },
+               timestamp: new Date().toISOString()
+           });
+
+           const formattedError = formatErrorMessage(error);
+
+           // Ensure toast is initialized before showing
+           if (document.getElementById('entitl-toast')) {
+               showToast({
+                   message: formattedError.message,
+                   type: formattedError.type,
+                   requestId: error.requestId,
+                   duration: CONFIG.TOAST_DURATION.ERROR
+               });
+           }
+
+           throw error;
+       }
+   }
 
     // Initialize and run
-    try {
-        initializeToast();
-        const result = await checkBot();
-        console.debug('Bot check complete:', {
-            result,
-            timestamp: new Date().toISOString()
-        });
-    } catch (error) {
-        // Error already handled in checkBot()
-    }
+    document.addEventListener('DOMContentLoaded', async () => {
+        try {
+            initializeToast();
+            await checkBot();
+        } catch (error) {
+            // Error already handled in checkBot()
+        }
+    });
 })();
