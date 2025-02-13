@@ -1,63 +1,125 @@
 (async function() {
-    function showToast(message, isError = false) {
+    /**
+     * Shows a toast message to the user
+     * @param {Object} config Toast configuration
+     */
+    function showToast({ message, type = 'info', duration = 3000, requestId = null }) {
         const toast = document.getElementById("toast");
         if (!toast) {
             console.error('Toast element not found');
             return;
         }
-        toast.textContent = message;
-        // Add error class if it's an error message
-        toast.className = `toast show ${isError ? 'error' : ''}`;
+
+        // Build toast message
+        let toastMessage = message;
+        if (requestId) {
+            toastMessage += ` (Request ID: ${requestId})`;
+        }
+
+        toast.textContent = toastMessage;
+        toast.className = `toast show ${type}`;
+
         setTimeout(() => {
             toast.className = "toast";
-        }, 3000); // Increased to 3 seconds for better readability
+        }, duration);
     }
 
+    /**
+     * Formats the bot detection result for display
+     * @param {Object} result Bot detection result
+     * @returns {Object} Formatted message and type
+     */
     function formatBotResult(result) {
         if (!result.isBot) {
-            return 'Human visitor detected';
+            return {
+                message: 'Human visitor detected',
+                type: 'success'
+            };
         }
 
         if (result.isAllowed) {
-            return `Legitimate bot detected: ${result.botType}`;
+            return {
+                message: `Legitimate bot detected: ${result.botType}`,
+                type: 'info'
+            };
         }
 
-        return `Suspicious bot detected: ${result.reason || 'unknown pattern'}`;
+        return {
+            message: `Suspicious bot detected: ${result.category} - ${result.reason || 'unknown pattern'}`,
+            type: 'warning'
+        };
     }
 
+    /**
+     * Handles error responses from the API
+     * @param {Response} response Fetch Response object
+     * @throws {Error} Enhanced error with details
+     */
     async function handleErrorResponse(response) {
-        let errorMessage = 'An error occurred';
-
+        let errorData;
         try {
-            const errorData = await response.json();
-
-            switch (response.status) {
-                case 400:
-                    errorMessage = `Validation error: ${errorData.details?.join(', ') || 'Invalid request'}`;
-                    break;
-                case 429:
-                    errorMessage = 'Too many requests. Please try again later.';
-                    break;
-                case 405:
-                    errorMessage = 'Method not allowed';
-                    break;
-                case 500:
-                    errorMessage = `Server error${errorData.requestId ? ` (Request ID: ${errorData.requestId})` : ''}`;
-                    break;
-                default:
-                    errorMessage = errorData.error || 'Unknown error occurred';
-            }
+            errorData = await response.json();
         } catch (e) {
-            // If we can't parse the error JSON, use the status text
-            errorMessage = response.statusText || errorMessage;
+            throw new Error(response.statusText || 'Unknown error occurred');
         }
 
-        throw new Error(errorMessage);
+        const error = new Error(errorData.error || 'Unknown error occurred');
+        error.status = response.status;
+        error.requestId = errorData.requestId;
+
+        // Add additional error details if available
+        if (errorData.details) {
+            error.details = errorData.details;
+        }
+
+        throw error;
     }
 
+    /**
+     * Maps HTTP status codes to user-friendly messages
+     * @param {Error} error Error object
+     * @returns {Object} Formatted error message and type
+     */
+    function formatErrorMessage(error) {
+        const baseMessage = error.message;
+        let type = 'error';
+
+        switch (error.status) {
+            case 400:
+                return {
+                    message: `Invalid request: ${error.details?.join(', ') || baseMessage}`,
+                    type: 'warning'
+                };
+            case 403:
+                return {
+                    message: 'Access denied',
+                    type: 'warning'
+                };
+            case 429:
+                return {
+                    message: 'Rate limit exceeded. Please try again later.',
+                    type: 'warning'
+                };
+            case 405:
+                return {
+                    message: 'Method not allowed',
+                    type: 'warning'
+                };
+            default:
+                return {
+                    message: baseMessage,
+                    type: 'error'
+                };
+        }
+    }
+
+    /**
+     * Performs the bot detection check
+     * @returns {Promise<Object>} Bot detection result
+     */
     async function checkBot() {
         try {
-            const response = await fetch('https://entitl-bot-check-674074734942.us-central1.run.app', {
+            const response = await fetch('https://entitl-org-bots-674074734942.us-central1.run.app', {
                 method: 'POST',
                 mode: 'cors',
                 credentials: 'omit',
@@ -77,25 +139,45 @@
             }
 
             const result = await response.json();
-            const message = formatBotResult(result);
-            showToast(message, result.isBot && !result.isAllowed);
+            const formattedResult = formatBotResult(result);
 
-            // Return the result for potential further use
+            showToast({
+                message: formattedResult.message,
+                type: formattedResult.type
+            });
+
             return result;
 
         } catch (error) {
             console.error('Bot check failed:', error);
-            showToast(error.message || 'Error checking bot status', true);
-            throw error; // Re-throw for the outer try-catch
+
+            const formattedError = formatErrorMessage(error);
+            showToast({
+                message: formattedError.message,
+                type: formattedError.type,
+                requestId: error.requestId,
+                duration: 5000 // Show errors longer
+            });
+
+            throw error;
         }
     }
 
     try {
         const result = await checkBot();
-        // You can do additional handling with the result here if needed
-        console.debug('Bot check complete:', result);
+        console.debug('Bot check complete:', {
+            result,
+            timestamp: new Date().toISOString()
+        });
     } catch (error) {
-        console.error('Failed to run bot check:', error);
-        // Toast is already shown by the checkBot function
+        // Additional error telemetry could be added here
+        console.error('Bot check failed:', {
+            error: {
+                message: error.message,
+                status: error.status,
+                requestId: error.requestId
+            },
+            timestamp: new Date().toISOString()
+        });
     }
 })();
