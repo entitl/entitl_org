@@ -9,11 +9,10 @@
     apiUrl: 'https://entitl-bots-674074734942.us-central1.run.app',
     retryAttempts: 2,
     retryDelay: 1000,
-    timeout: 10000, // Increased timeout to 10 seconds
-    checkInterval: 1000 // Check every second for port closure
+    timeout: 10000,
+    checkInterval: 1000
   };
 
-  // Styles remain unchanged...
   const styles = `
     .bot-detector-toast-container {
       position: fixed;
@@ -21,16 +20,133 @@
       right: 20px;
       z-index: 9999;
     }
-    /* ... rest of the styles ... */
+
+    .bot-detector-toast {
+      min-width: 300px;
+      max-width: 400px;
+      background: white;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transform: translateX(120%);
+      transition: transform 0.3s ease-in-out;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      position: relative;
+    }
+
+    .bot-detector-toast.show {
+      transform: translateX(0);
+    }
+
+    .bot-detector-toast.success {
+      border-left: 4px solid #10B981;
+    }
+
+    .bot-detector-toast.warning {
+      border-left: 4px solid #F59E0B;
+    }
+
+    .bot-detector-toast.error {
+      border-left: 4px solid #EF4444;
+    }
+
+    .bot-detector-toast h4 {
+      margin: 0 0 8px 0;
+      font-size: 16px;
+      font-weight: 600;
+      padding-right: 20px;
+    }
+
+    .bot-detector-toast .content {
+      margin: 0;
+      font-size: 14px;
+      color: #374151;
+    }
+
+    .bot-detector-toast .close-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: none;
+      border: none;
+      color: #9CA3AF;
+      cursor: pointer;
+      padding: 4px;
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .bot-detector-toast .close-btn:hover {
+      color: #374151;
+    }
+
+    .bot-detector-toast ul {
+      list-style: none;
+      padding: 0;
+      margin: 8px 0 0 0;
+    }
+
+    .bot-detector-toast li {
+      margin: 4px 0;
+      font-size: 13px;
+      color: #4B5563;
+    }
   `;
 
   class ToastManager {
     constructor() {
       this.container = null;
+      this.toasts = new Set();
       this.createContainer();
     }
 
-    // ... rest of ToastManager implementation ...
+    createContainer() {
+      if (!this.container) {
+        this.container = document.createElement('div');
+        this.container.className = 'bot-detector-toast-container';
+        document.body.appendChild(this.container);
+      }
+    }
+
+    show(options) {
+      const toast = document.createElement('div');
+      toast.className = `bot-detector-toast ${options.type}`;
+
+      toast.innerHTML = `
+        <button class="close-btn">&times;</button>
+        <h4>${options.title}</h4>
+        ${options.content}
+      `;
+
+      this.container.appendChild(toast);
+      this.toasts.add(toast);
+
+      // Force a reflow before adding the show class
+      toast.offsetHeight;
+
+      // Add show class for animation
+      setTimeout(() => toast.classList.add('show'), 10);
+
+      // Setup close button
+      const closeBtn = toast.querySelector('.close-btn');
+      closeBtn.addEventListener('click', () => this.closeToast(toast));
+
+      // Auto close after duration
+      setTimeout(() => this.closeToast(toast), options.duration || 5000);
+    }
+
+    closeToast(toast) {
+      toast.classList.remove('show');
+      setTimeout(() => {
+        toast.remove();
+        this.toasts.delete(toast);
+      }, 300); // Match the CSS transition duration
+    }
+
+    clearAll() {
+      this.toasts.forEach(toast => this.closeToast(toast));
+    }
   }
 
   class BotDetector {
@@ -89,13 +205,11 @@
 
       while (attempts <= maxAttempts) {
         try {
-          // Clear any existing abort controller
           if (this.abortController) {
             this.abortController.abort();
           }
           this.abortController = new AbortController();
 
-          // Set up timeout for the entire operation
           const timeoutPromise = new Promise((_, reject) => {
             this.checkTimeout = setTimeout(() => {
               this.abortController.abort();
@@ -103,7 +217,6 @@
             }, this.config.timeout);
           });
 
-          // Make the fetch request
           const fetchPromise = fetch(this.config.apiUrl, {
             method: 'POST',
             headers: {
@@ -113,13 +226,10 @@
             body: JSON.stringify(this.getClientInfo()),
             signal: this.abortController.signal,
             mode: 'cors',
-            credentials: 'omit' // Explicitly disable credentials
+            credentials: 'omit'
           });
 
-          // Race between fetch and timeout
           const response = await Promise.race([fetchPromise, timeoutPromise]);
-
-          // Clear timeout since we got a response
           clearTimeout(this.checkTimeout);
 
           if (!response.ok) {
@@ -145,10 +255,8 @@
             throw error;
           }
 
-          // Wait before retrying
-          await this.delay(this.config.retryDelay * attempts); // Exponential backoff
+          await this.delay(this.config.retryDelay * attempts);
         } finally {
-          // Cleanup
           clearTimeout(this.checkTimeout);
           this.abortController = null;
         }
@@ -214,6 +322,9 @@
         this.abortController.abort();
       }
       clearTimeout(this.checkTimeout);
+      if (this.toastManager) {
+        this.toastManager.clearAll();
+      }
     }
   }
 
