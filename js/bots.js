@@ -6,7 +6,7 @@
 (() => {
   // Internal configuration
   const API_CONFIG = {
-    url: 'https://entitl-bots-674074734942.us-central1.run.app'
+    url: 'https://us-central1-pixel-432500.cloudfunctions.net/entitl-bots'
   };
 
   // Styles for toast notifications
@@ -148,6 +148,36 @@
       this.toastManager = new ToastManager();
     }
 
+    // Collect client information
+    getClientInfo() {
+      return {
+        url: window.location.href,
+        referrer: document.referrer,
+        screen: {
+          width: window.screen.width,
+          height: window.screen.height,
+          colorDepth: window.screen.colorDepth,
+          pixelRatio: window.devicePixelRatio
+        },
+        window: {
+          innerWidth: window.innerWidth,
+          innerHeight: window.innerHeight
+        },
+        navigator: {
+          language: navigator.language,
+          languages: navigator.languages,
+          platform: navigator.platform,
+          hardwareConcurrency: navigator.hardwareConcurrency,
+          deviceMemory: navigator.deviceMemory,
+          connectionType: navigator.connection?.type,
+          connectionSpeed: navigator.connection?.effectiveType,
+          vendor: navigator.vendor,
+          cookieEnabled: navigator.cookieEnabled
+        },
+        timestamp: new Date().toISOString()
+      };
+    }
+
     async checkForBot() {
       const startTime = performance.now();
       let attempts = 0;
@@ -158,10 +188,11 @@
           const timeoutId = setTimeout(() => controller.abort(), this.config.timeout);
 
           const response = await fetch(API_CONFIG.url, {
-            method: 'GET',
+            method: 'POST',
             headers: {
               'Content-Type': 'application/json'
             },
+            body: JSON.stringify(this.getClientInfo()),
             credentials: 'include',
             signal: controller.signal
           });
@@ -256,4 +287,5 @@
   window.BotDetector = BotDetector;
 })();
 
+// Single line initialization and usage:
 new BotDetector().checkForBot();
