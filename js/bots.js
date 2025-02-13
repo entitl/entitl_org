@@ -1,13 +1,66 @@
 (async function() {
+    // Add toast styles via JavaScript
+    const styles = `
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 24px;
+            border-radius: 4px;
+            background: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transform: translateX(150%);
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+            z-index: 1000;
+            opacity: 0;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .toast.info {
+            background-color: #2196F3;
+            color: white;
+        }
+
+        .toast.success {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .toast.warning {
+            background-color: #FFC107;
+            color: black;
+        }
+
+        .toast.error {
+            background-color: #F44336;
+            color: white;
+        }
+    `;
+
+    // Create and inject styles
+    const styleSheet = document.createElement("style");
+    styleSheet.textContent = styles;
+    document.head.appendChild(styleSheet);
+
+    // Create toast container and add to document
+    const toastContainer = document.createElement("div");
+    toastContainer.id = "toast";
+    document.body.appendChild(toastContainer);
+
     /**
      * Shows a toast message to the user
      * @param {Object} config Toast configuration
      */
     function showToast({ message, type = 'info', duration = 3000, requestId = null }) {
         const toast = document.getElementById("toast");
-        if (!toast) {
-            console.error('Toast element not found');
-            return;
+
+        // Clear any existing timeouts
+        if (toast.timeoutId) {
+            clearTimeout(toast.timeoutId);
         }
 
         // Build toast message
@@ -16,11 +69,25 @@
             toastMessage += ` (Request ID: ${requestId})`;
         }
 
+        // Update toast content and classes
         toast.textContent = toastMessage;
+        toast.className = "toast"; // Reset classes
+
+        // Force reflow to ensure transition works
+        void toast.offsetWidth;
+
+        // Add show class and type
         toast.className = `toast show ${type}`;
 
-        setTimeout(() => {
-            toast.className = "toast";
+        // Set timeout to hide toast
+        toast.timeoutId = setTimeout(() => {
+            toast.style.transform = 'translateX(150%)';
+            toast.style.opacity = '0';
+
+            // Remove classes after transition
+            setTimeout(() => {
+                toast.className = "toast";
+            }, 300); // Match transition duration
         }, duration);
     }
 
