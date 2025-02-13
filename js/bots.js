@@ -2,7 +2,7 @@
   // Default configuration
   var DEFAULT_CONFIG = {
     apiUrl: 'https://entitl-bots-674074734942.us-central1.run.app',
-    retryAttempts: 2,
+    retryAttempts: 1,
     retryDelay: 1000,
     timeout: 10000,
     fallbackBotHandling: {
@@ -41,6 +41,7 @@
     toast.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
     toast.style.opacity = '0';
     toast.style.transition = 'opacity 0.3s ease-in-out';
+    toast.style.color = 'black';
 
     // Type-specific styling
     switch(options.type) {
@@ -144,7 +145,7 @@
       }
     } else {
       // Log successful human detection
-      this.showToast('No Bot Detected', 'success');
+      this.showToast('You are not a restricted Bot! :)', 'success');
     }
 
     return data;
@@ -158,7 +159,7 @@
   // Show bot detected toast
   BotDetector.prototype.showBotDetectedToast = function(detection) {
     var content = [
-      '<strong style="color:#F59E0B;">AI Bot Detected!</strong>',
+      'You are a Bot! Try https://entitl.ai',
       'Confidence: ' + (detection.confidence * 100).toFixed(1) + '%',
       'User Agent Match: ' + (detection.userAgentMatch ? 'Yes' : 'No'),
       'IP Match: ' + (detection.ipMatch ? 'Yes' : 'No')
