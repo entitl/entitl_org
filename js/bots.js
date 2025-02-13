@@ -190,10 +190,13 @@
           const response = await fetch(API_CONFIG.url, {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'X-Requested-With': 'XMLHttpRequest'
             },
             body: JSON.stringify(this.getClientInfo()),
             credentials: 'include',
+            mode: 'cors',
             signal: controller.signal
           });
 
