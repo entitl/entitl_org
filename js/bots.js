@@ -153,7 +153,7 @@
 
   // Redirect page for bot detection
   BotDetector.prototype.redirectPage = function() {
-    window.location.href = 'https://entitl.ai/bot-detected';
+    window.location.href = 'https://entitl.ai';
   };
 
   // Show bot detected toast
