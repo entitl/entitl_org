@@ -137,21 +137,43 @@
      * @param {Response} response Fetch Response object
      * @throws {Error} Enhanced error with details
      */
-    async function handleErrorResponse(response) {
-        let errorData;
-        try {
-            errorData = await response.json();
-        } catch {
-            throw new Error(`HTTP ${response.status}: ${response.statusText || 'Unknown error occurred'}`);
-        }
+     async function handleErrorResponse(response) {
+         let errorData;
 
-        const error = new Error(errorData.error || 'Unknown error occurred');
-        error.status = response.status;
-        error.requestId = errorData.requestId;
-        error.details = errorData.details;
+         try {
+             const text = await response.text();
+             try {
+                 errorData = JSON.parse(text);
+             } catch {
+                 errorData = {
+                     error: `Server Error: ${text || response.statusText}`,
+                     requestId: 'unknown'
+                 };
+             }
+         } catch {
+             errorData = {
+                 error: `HTTP ${response.status}: ${response.statusText || 'Unknown error occurred'}`,
+                 requestId: 'unknown'
+             };
+         }
 
-        throw error;
-    }
+         const error = new Error(errorData.error || 'Unknown error occurred');
+         error.status = response.status;
+         error.requestId = errorData.requestId;
+         error.details = errorData.details;
+         error.timestamp = new Date().toISOString();
+
+         // Log detailed error information
+         console.error('API Error:', {
+             status: response.status,
+             statusText: response.statusText,
+             error: errorData,
+             timestamp: error.timestamp,
+             requestId: error.requestId
+         });
+
+         return error;
+     }
 
     /**
      * Maps HTTP status codes to user-friendly messages
@@ -191,91 +213,57 @@
      * @returns {Promise<Object>} Bot detection result
      */
      async function checkBot() {
-       try {
-           // Ensure we're running in a browser environment
-           if (typeof window === 'undefined' || !window.fetch) {
-               throw new Error('Environment not supported');
-           }
+        try {
+            const response = await fetch(CONFIG.ENDPOINT, {
+                method: 'POST',
+                mode: 'cors',
+                credentials: 'omit',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    userAgent: navigator.userAgent,
+                    domain: window.location.hostname,
+                    referer: document.referrer || ''
+                })
+            });
 
-           // Validate required browser APIs
-           if (!navigator?.userAgent || !window?.location?.hostname) {
-               throw new Error('Required browser APIs not available');
-           }
+            if (!response.ok) {
+                throw await handleErrorResponse(response);
+            }
 
-           const response = await fetch(CONFIG.ENDPOINT, {
-               method: 'POST',
-               mode: 'cors',
-               credentials: 'omit',
-               headers: {
-                   'Content-Type': 'application/json',
-                   'Accept': 'application/json'
-               },
-               body: JSON.stringify({
-                   userAgent: navigator.userAgent,
-                   domain: window.location.hostname,
-                   referer: document.referrer || ''
-               })
-           });
+            const result = await response.json();
 
-           // Network error handling
-           if (!response.ok) {
-               const errorText = await response.text();
-               let errorData;
+            if (!result?.success || !result?.data) {
+                throw new Error('Invalid response format');
+            }
 
-               try {
-                   errorData = JSON.parse(errorText);
-               } catch {
-                   errorData = { error: `HTTP ${response.status}: ${errorText || response.statusText}` };
-               }
+            return result.data;
 
-               const error = new Error(errorData.error || 'Unknown error occurred');
-               error.status = response.status;
-               error.requestId = errorData.requestId;
-               error.details = errorData.details;
-               throw error;
-           }
+        } catch (error) {
+            // Improve error logging
+            console.error('Bot check failed:', {
+                error: {
+                    message: error.message,
+                    status: error.status,
+                    requestId: error.requestId,
+                    timestamp: error.timestamp || new Date().toISOString()
+                }
+            });
 
-           const result = await response.json();
+            // Show user-friendly error message
+            const formattedError = formatErrorMessage(error);
+            showToast({
+                message: formattedError.message,
+                type: 'error',
+                requestId: error.requestId,
+                duration: CONFIG.TOAST_DURATION.ERROR
+            });
 
-           if (!result?.success || !result?.data) {
-               throw new Error('Invalid response format');
-           }
-
-           const formattedResult = formatBotResult(result.data);
-
-           showToast({
-               message: formattedResult.message,
-               type: formattedResult.type,
-               requestId: result.requestId
-           });
-
-           return result.data;
-
-       } catch (error) {
-           console.error('Bot check failed:', {
-               error: {
-                   message: error.message,
-                   status: error.status,
-                   requestId: error.requestId
-               },
-               timestamp: new Date().toISOString()
-           });
-
-           const formattedError = formatErrorMessage(error);
-
-           // Ensure toast is initialized before showing
-           if (document.getElementById('entitl-toast')) {
-               showToast({
-                   message: formattedError.message,
-                   type: formattedError.type,
-                   requestId: error.requestId,
-                   duration: CONFIG.TOAST_DURATION.ERROR
-               });
-           }
-
-           throw error;
-       }
-   }
+            throw error;
+        }
+    }
 
     // Initialize and run
     document.addEventListener('DOMContentLoaded', async () => {
