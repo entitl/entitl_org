@@ -14,7 +14,7 @@
 
     async function checkBot() {
         try {
-            const response = await fetch('https://us-central1-bots-framework.cloudfunctions.net/bots-check', {
+            const response = await fetch('https://entitl-bot-check-674074734942.us-central1.run.app', {
                 method: 'POST',
                 mode: 'cors',
                 credentials: 'omit',
