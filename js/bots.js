@@ -19,7 +19,89 @@
     }
   };
 
-  const styles = `
+  // Styles definition moved before use
+  const toastStyles = `
+    .bot-detector-toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+    }
+
+    .bot-detector-toast {
+      min-width: 300px;
+      max-width: 400px;
+      background: white;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transform: translateX(120%);
+      transition: transform 0.3s ease-in-out;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      position: relative;
+    }
+
+    .bot-detector-toast.show {
+      transform: translateX(0);
+    }
+
+    .bot-detector-toast.success {
+      border-left: 4px solid #10B981;
+    }
+
+    .bot-detector-toast.warning {
+      border-left: 4px solid #F59E0B;
+    }
+
+    .bot-detector-toast.error {
+      border-left: 4px solid #EF4444;
+    }
+
+    .bot-detector-toast h4 {
+      margin: 0 0 8px 0;
+      font-size: 16px;
+      font-weight: 600;
+      padding-right: 20px;
+    }
+
+    .bot-detector-toast .content {
+      margin: 0;
+      font-size: 14px;
+      color: #374151;
+    }
+
+    .bot-detector-toast .close-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: none;
+      border: none;
+      color: #9CA3AF;
+      cursor: pointer;
+      padding: 4px;
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .bot-detector-toast .close-btn:hover {
+      color: #374151;
+    }
+
+    .bot-detector-toast ul {
+      list-style: none;
+      padding: 0;
+      margin: 8px 0 0 0;
+    }
+
+    .bot-detector-toast li {
+      margin: 4px 0;
+      font-size: 13px;
+      color: #4B5563;
+    }
+  `;
+
+  const botDetectorStyles = `
     .bot-detector-overlay {
       position: fixed;
       top: 0;
@@ -42,12 +124,61 @@
       max-width: 400px;
       text-align: center;
     }
-
-    ${styles}
   `;
 
   class ToastManager {
-    // ... (previous ToastManager implementation remains the same)
+    constructor() {
+      this.container = null;
+      this.toasts = new Set();
+      this.createContainer();
+    }
+
+    createContainer() {
+      if (!this.container) {
+        this.container = document.createElement('div');
+        this.container.className = 'bot-detector-toast-container';
+        document.body.appendChild(this.container);
+      }
+    }
+
+    show(options) {
+      const toast = document.createElement('div');
+      toast.className = `bot-detector-toast ${options.type}`;
+
+      toast.innerHTML = `
+        <button class="close-btn">&times;</button>
+        <h4>${options.title}</h4>
+        ${options.content}
+      `;
+
+      this.container.appendChild(toast);
+      this.toasts.add(toast);
+
+      // Force a reflow before adding the show class
+      toast.offsetHeight;
+
+      // Add show class for animation
+      setTimeout(() => toast.classList.add('show'), 10);
+
+      // Setup close button
+      const closeBtn = toast.querySelector('.close-btn');
+      closeBtn.addEventListener('click', () => this.closeToast(toast));
+
+      // Auto close after duration
+      setTimeout(() => this.closeToast(toast), options.duration || 5000);
+    }
+
+    closeToast(toast) {
+      toast.classList.remove('show');
+      setTimeout(() => {
+        toast.remove();
+        this.toasts.delete(toast);
+      }, 300); // Match the CSS transition duration
+    }
+
+    clearAll() {
+      this.toasts.forEach(toast => this.closeToast(toast));
+    }
   }
 
   class BotDetector {
@@ -67,7 +198,41 @@
     }
 
     getClientInfo() {
-      // ... (previous getClientInfo implementation remains the same)
+      try {
+        return {
+          url: window.location.href,
+          referrer: document.referrer,
+          screen: {
+            width: window.screen?.width,
+            height: window.screen?.height,
+            colorDepth: window.screen?.colorDepth,
+            pixelRatio: window.devicePixelRatio
+          },
+          window: {
+            innerWidth: window.innerWidth,
+            innerHeight: window.innerHeight
+          },
+          navigator: {
+            language: navigator.language,
+            languages: navigator.languages,
+            platform: navigator.platform,
+            hardwareConcurrency: navigator.hardwareConcurrency,
+            deviceMemory: navigator.deviceMemory,
+            connectionType: navigator.connection?.type,
+            connectionSpeed: navigator.connection?.effectiveType,
+            vendor: navigator.vendor,
+            cookieEnabled: navigator.cookieEnabled
+          },
+          timestamp: new Date().toISOString()
+        };
+      } catch (error) {
+        console.error('Error collecting client info:', error);
+        return {
+          url: window.location.href,
+          timestamp: new Date().toISOString(),
+          error: 'Failed to collect complete client info'
+        };
+      }
     }
 
     async checkForBot() {
@@ -247,11 +412,18 @@
     }
 
     injectStyles() {
-      if (!document.getElementById('bot-detector-styles')) {
-        const styleSheet = document.createElement('style');
-        styleSheet.id = 'bot-detector-styles';
-        styleSheet.textContent = styles;
-        document.head.appendChild(styleSheet);
+      if (!document.getElementById('bot-detector-toast-styles')) {
+        const toastStyleSheet = document.createElement('style');
+        toastStyleSheet.id = 'bot-detector-toast-styles';
+        toastStyleSheet.textContent = toastStyles;
+        document.head.appendChild(toastStyleSheet);
+      }
+
+      if (!document.getElementById('bot-detector-overlay-styles')) {
+        const overlayStyleSheet = document.createElement('style');
+        overlayStyleSheet.id = 'bot-detector-overlay-styles';
+        overlayStyleSheet.textContent = botDetectorStyles;
+        document.head.appendChild(overlayStyleSheet);
       }
     }
 
