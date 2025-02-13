@@ -19,25 +19,30 @@
   ToastManager.prototype.createContainer = function() {
     if (!this.container) {
       this.container = document.createElement('div');
-      this.container.className = 'bot-detector-toast-container';
+      this.container.id = 'bot-detector-toast-container';
       this.container.style.position = 'fixed';
       this.container.style.top = '20px';
       this.container.style.right = '20px';
       this.container.style.zIndex = '9999';
+      this.container.style.maxWidth = '300px';
       document.body.appendChild(this.container);
     }
   };
 
   ToastManager.prototype.show = function(options) {
     var toast = document.createElement('div');
+
+    // Toast styling
     toast.style.backgroundColor = 'white';
     toast.style.border = '1px solid #ddd';
     toast.style.padding = '15px';
+    toast.style.marginBottom = '10px';
     toast.style.borderRadius = '5px';
     toast.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
-    toast.style.marginBottom = '10px';
+    toast.style.opacity = '0';
+    toast.style.transition = 'opacity 0.3s ease-in-out';
 
-    // Set color based on type
+    // Type-specific styling
     switch(options.type) {
       case 'warning':
         toast.style.borderLeft = '4px solid #F59E0B';
@@ -50,14 +55,24 @@
         break;
     }
 
+    // Set content
     toast.innerHTML = options.content || options.message;
 
+    // Add to container
     this.container.appendChild(toast);
 
-    // Auto-remove
+    // Fade in
     setTimeout(function() {
-      toast.remove();
-    }, options.duration || 5000);
+      toast.style.opacity = '1';
+    }, 10);
+
+    // Auto-remove after 2 seconds
+    setTimeout(function() {
+      toast.style.opacity = '0';
+      setTimeout(function() {
+        toast.remove();
+      }, 300);
+    }, 2000);
   };
   // Bot Detector Constructor
   function BotDetector(config) {
@@ -143,7 +158,7 @@
   // Show bot detected toast
   BotDetector.prototype.showBotDetectedToast = function(detection) {
     var content = [
-      '<strong>AI Bot Detected!</strong>',
+      '<strong style="color:#F59E0B;">AI Bot Detected!</strong>',
       'Confidence: ' + (detection.confidence * 100).toFixed(1) + '%',
       'User Agent Match: ' + (detection.userAgentMatch ? 'Yes' : 'No'),
       'IP Match: ' + (detection.ipMatch ? 'Yes' : 'No')
@@ -157,7 +172,7 @@
     this.toastManager.show({
       content: message,
       type: type,
-      duration: 7000
+      duration: 2000 // 2 seconds as requested
     });
   };
   // Bot detection method with retry mechanism
