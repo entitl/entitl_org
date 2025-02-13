@@ -17,7 +17,7 @@
             const response = await fetch('https://us-central1-bots-framework.cloudfunctions.net/bots-check', {
                 method: 'POST',
                 mode: 'cors',
-                credentials: 'omit', // Changed from same-origin since we're using cross-origin
+                credentials: 'omit',
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json'
@@ -30,7 +30,8 @@
             });
 
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                const errorText = await response.text();
+                throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
             }
 
             const { isBot } = await response.json();
