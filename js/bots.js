@@ -143,8 +143,11 @@
     var botHandling = data.data.botHandling || this.config.fallbackBotHandling;
 
     // Handle bot detection based on mode
+    console.log("show_toast: " + botHandling.show_toast);
+    console.log("mode: " + botHandling.mode);
+    console.log("human_text: " + botHandling.human_text);
+
     if (isBot) {
-      console.log("mode: " + botHandling.mode);
       var entitl_ua = data.request.headers.userAgent;
       if (botHandling.mode === 'redirect') {
         window.location.href = 'https://entitl.ai?entitl_ua=' + entitl_ua;
@@ -159,7 +162,6 @@
         this.showToast(content, 'warning');
       }
     } else if(botHandling.show_toast){
-      console.log("show_toast: " + botHandling.show_toast);
       this.showToast(botHandling.human_text, 'success');
     }
 
