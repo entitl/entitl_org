@@ -145,7 +145,8 @@
     // Handle bot detection based on mode
     if (isBot) {
       if (botHandling.mode === 'redirect') {
-        window.location.href = 'https://entitl.ai';
+        var entitl_ua = data.request.headers.userAgent;
+        window.location.href = 'https://entitl.ai?entitl_ua=' + entitl_ua;
       } else {
         // Show bot detected toast
         var content = [
