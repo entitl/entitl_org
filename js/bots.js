@@ -10,6 +10,8 @@
     }
   };
 
+  const environment = 'production';
+
   // Toast Manager Class - Only created when needed
   function ToastManager() {
     this.container = null;
@@ -105,13 +107,15 @@
           vendor: navigator.vendor,
           cookieEnabled: navigator.cookieEnabled
         },
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        environment: environment
       };
     } catch (error) {
       console.error('Error collecting client info:', error);
       return {
         url: window.location.href,
         timestamp: new Date().toISOString(),
+        environment: environment,
         error: 'Failed to collect complete client info'
       };
     }
@@ -143,7 +147,7 @@
     var botHandling = data.data.botHandling || this.config.fallbackBotHandling;
 
     // Handle bot detection based on mode
-    
+
     console.log("mode: " + botHandling.mode);
     console.log("show_toast: " + botHandling.show_toast);
     console.log("human_text: " + botHandling.human_text);
