@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bot Tracker Installation - Entitl.org</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #000;
+            color: white;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.9);
+        }
+
+        .logo img {
+            height: 128px;
+            width: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover img {
+            transform: scale(1.05);
+        }
+
+        section {
+            padding: 180px 20px 80px;
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-family: 'Anton', sans-serif;
+            font-size: 3rem;
+            color: #39FF14;
+            margin-bottom: 30px;
+        }
+
+        .installation-card {
+            background: #111;
+            border: 1px solid #39FF14;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .code-block {
+            background: #000;
+            border: 1px solid #39FF14;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: monospace;
+            position: relative;
+        }
+
+        .copy-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #39FF14;
+            color: #000;
+            border: none;
+            border-radius: 3px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .copy-button:hover {
+            background: #2bff00;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .option-card {
+            background: #111;
+            border: 1px solid #39FF14;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .option-card h3 {
+            color: #39FF14;
+            margin-top: 0;
+        }
+
+        .footer {
+            background: #111;
+            padding: 60px 20px;
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .copyright {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .logo img {
+                height: 96px;
+            }
+
+            section {
+                padding-top: 140px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo img {
+                height: 64px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <a href="/" class="logo">
+            <img src="image/logo.png" alt="Entitl.org Logo">
+        </a>
+    </header>
+
+    <section>
+        <h1>Bot Tracker Installation Guide</h1>
+
+        <div class="installation-card">
+            <h2>Step 1: Quick Installation</h2>
+            <p>Add the following script tag to your website's HTML, preferably just before the closing </body> tag:</p>
+            <div class="code-block">
+                <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                <code>&lt;script async src="https://entitl.github.io/entitl_org/js/bots.js"&gt;&lt;/script&gt;</code>
+            </div>
+        </div>
+
+        <!-- <div class="installation-card">
+            <h2>Advanced Installation</h2>
+            <p>For more control over the bot tracker, you can self-host the script and customize its options:</p>
+            <div class="code-block">
+                <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                <code>&lt;script&gt;
+    window.ENTITL_CONFIG = {
+        trackingEndpoint: 'your-endpoint',
+        siteId: 'your-site-id',
+        debug: false
+    };
+&lt;/script&gt;
+&lt;script src="path/to/your/bots.js"&gt;&lt;/script&gt;</code>
+            </div>
+        </div> -->
+
+        <div class="installation-card">
+            <h2>Step 2: Email</h2>
+            <p>To activate your web property and for more control over the bot tracker, please email us the details mentioned below.</p>
+            <div class="code-block">
+                <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                <code>advocate@entitl.org</code>
+            </div>
+        </div>
+
+        <div class="options-grid">
+            <div class="option-card">
+                <h3>Origin</h3>
+                <p>This is the full domain of the site where you have installed the javascript from Step 1 above.</p>
+                <div class="code-block">
+                    <code>Example: 'https://www.publisher.com'</code>
+                </div>
+            </div>
+
+            <div class="option-card">
+                <h3>Whitelist User Agents</h3>
+                <p>This is the list of user agents you want to let through our bot tracker</p>
+                <div class="code-block">
+                    <code>Example: ['user-agent 1', 'user-agent 1']</code>
+                </div>
+            </div>
+
+            <div class="option-card">
+                <h3>Bot Mode</h3>
+                <p>If a malicious bot is detected do you want to <strong>toast</strong> or <strong>redirect</strong>. The redirect will take the bot to https://entitl.ai (not that the bot will know what to do with it, but at least it won't be able to scrape the content of your web page)</p>
+                <div class="code-block">
+                    <code>Example: 'toast'</code>
+                </div>
+            </div>
+
+            <div class="option-card">
+                <h3>Do Something</h3>
+                <p>If you don't want to do anything when a malicious bot is detected, say <strong>false</strong> else say <strong>true</strong>.</p>
+                <div class="code-block">
+                    <code>Example: true</code>
+                </div>
+            </div>
+
+            <div class="option-card">
+                <h3>Toast Message</h3>
+                <p>If you have chosen to <strong>toast</strong> your Human users, plese provide a custom message less than 50 chars.</p>
+                <div class="code-block">
+                    <code>Example: 'You seem Human! :)'</code>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="copyright">© 2025 Entitl - AI Data Standards Initiative. All Rights Reserved</div>
+    </footer>
+
+    <script>
+        function copyCode(button) {
+            const codeBlock = button.nextElementSibling;
+            const textArea = document.createElement('textarea');
+            textArea.value = codeBlock.textContent;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+
+            button.textContent = 'Copied!';
+            setTimeout(() => {
+                button.textContent = 'Copy';
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
