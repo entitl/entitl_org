@@ -145,15 +145,15 @@
     // Handle bot detection based on mode
     if (isBot) {
       console.log("mode: " + botHandling.mode);
+      var entitl_ua = data.request.headers.userAgent;
       if (botHandling.mode === 'redirect') {
-        var entitl_ua = data.request.headers.userAgent;
         window.location.href = 'https://entitl.ai?entitl_ua=' + entitl_ua;
       } else {
         // Show bot detected toast
         var content = [
           'You seem Bot-tish! Try https://entitl.ai',
           'Confidence: ' + (detection.confidence * 100).toFixed(1) + '%',
-          'User Agent Match: ' + (detection.userAgentMatch ? 'Yes' : 'No'),
+          'User Agent: ' + entitl_ua,
           'IP Match: ' + (detection.ipMatch ? 'Yes' : 'No')
         ].join('<br>');
         this.showToast(content, 'warning');
