@@ -94,7 +94,6 @@
     try {
       return {
         url: window.location.href,
-        referrer: document.referrer,
         navigator: {
           language: navigator.language,
           languages: navigator.languages,
@@ -112,7 +111,6 @@
       console.error('Error collecting client info:', error);
       return {
         url: window.location.href,
-        referrer: document.referrer,
         timestamp: new Date().toISOString(),
         error: 'Failed to collect complete client info'
       };
