@@ -155,7 +155,7 @@
     if (isBot) {
       var entitl_ua = data.request.headers.userAgent;
       if (botHandling.mode === 'redirect') {
-        window.location.href = 'https://entitl.ai?entitl_ua=' + entitl_ua;
+        window.location.href = 'https://entitl.ai/ip-infringement-policy.html?entitl_ua=' + entitl_ua;
       } else {
         // Show bot detected toast
         var content = [
