@@ -144,6 +144,7 @@
 
     // Handle bot detection based on mode
     if (isBot) {
+      console.log("mode: " + botHandling.mode);
       if (botHandling.mode === 'redirect') {
         var entitl_ua = data.request.headers.userAgent;
         window.location.href = 'https://entitl.ai?entitl_ua=' + entitl_ua;
@@ -158,6 +159,7 @@
         this.showToast(content, 'warning');
       }
     } else if(botHandling.show_toast){
+      console.log("show_toast: " + botHandling.show_toast);
       this.showToast('You seem Human! :)', 'success');
     }
 
