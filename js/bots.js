@@ -4,10 +4,7 @@
     apiUrl: 'https://entitl-bots-674074734942.us-central1.run.app',
     retryAttempts: 1,
     retryDelay: 1000,
-    timeout: 10000,
-    fallbackBotHandling: {
-      mode: 'toast'
-    }
+    timeout: 10000
   };
 
   const environment = 'production';
@@ -144,19 +141,18 @@
     // Check if bot is detected
     var isBot = data.data.isBot;
     var detection = data.data.detection || {};
-    var botHandling = data.data.botHandling || this.config.fallbackBotHandling;
+    var botHandling = data.data.botHandling;
 
-    // Handle bot detection based on mode
+    // Handle bot detection based on action
 
-    console.log("mode: " + botHandling.mode);
-    console.log("show_toast: " + botHandling.show_toast);
+    console.log("action: " + botHandling.action);
     console.log("human_text: " + botHandling.human_text);
 
     if (isBot) {
       var entitl_ua = data.request.headers.userAgent;
-      if (botHandling.mode === 'redirect') {
+      if (botHandling.action === 'redirect') {
         window.location.href = 'https://entitl.ai/?entitl_ua=' + entitl_ua;
-      } else {
+      } else if (botHandling.action === 'toast'){
         // Show bot detected toast
         var content = [
           'You seem Bot-like! Try https://entitl.ai',
@@ -166,7 +162,7 @@
         ].join('<br>');
         this.showToast(content, 'warning');
       }
-    } else if(botHandling.show_toast){
+    } else if (botHandling.action === 'toast'){
       this.showToast(botHandling.human_text, 'success');
     }
 
