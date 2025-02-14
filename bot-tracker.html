@@ -6,6 +6,16 @@
     <title>Bot Tracker Installation - Entitl.org</title>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
+    <meta property="og:description" content="This service is absolutely free for any web publisher. We take pride in advocating AI data standards." />
+    <meta itemprop="image" property="og:image" content="https://entitl.org/image/logo.png" />
+    <link rel="icon" type="image/svg+xml" href="https://entitl.org/favicon.svg">
+
+    <!-- Load and initialize GTM head script -->
+    <script type="module">
+        import { initGTMHead } from '/js/gtm-head.js';
+        initGTMHead('GTM-N2JZ47XF');
+    </script>
+
     <style>
         body, html {
             margin: 0;
@@ -143,6 +153,13 @@
     </style>
 </head>
 <body>
+    <!-- Load and initialize GTM body script -->
+    <script type="module">
+        import { initGTMBody } from '/js/gtm-body.js';
+        initGTMBody('GTM-N2JZ47XF');
+    </script>
+    <script src="js/bots-staging.js"> </script>
+
     <header class="header">
         <a href="/" class="logo">
             <img src="image/logo.png" alt="Entitl.org Logo">
@@ -204,18 +221,18 @@
             </div>
 
             <div class="option-card">
-                <h3>Bot Mode</h3>
-                <p>If a malicious bot is detected do you want to <strong>toast</strong> or <strong>redirect</strong>. The redirect will take the bot to https://entitl.ai (not that the bot will know what to do with it, but at least it won't be able to scrape the content of your web page)</p>
+                <h3>Do Something</h3>
+                <p>If you want to take some action when a malicious bot is detected, say <strong>true</strong> else say <strong>false</strong>.</p>
                 <div class="code-block">
-                    <code>Example: 'toast'</code>
+                    <code>Example: true</code>
                 </div>
             </div>
 
             <div class="option-card">
-                <h3>Do Something</h3>
-                <p>If you don't want to do anything when a malicious bot is detected, say <strong>false</strong> else say <strong>true</strong>.</p>
+                <h3>Bot Mode</h3>
+                <p>If a malicious bot is detected do you want to <strong>toast</strong> or <strong>redirect</strong> the user. The redirect will take the bot to https://entitl.ai (not that the bot will know what to do with it, but at least it won't be able to scrape the content of your web page)</p>
                 <div class="code-block">
-                    <code>Example: true</code>
+                    <code>Example: 'toast'</code>
                 </div>
             </div>
 
@@ -223,7 +240,15 @@
                 <h3>Toast Message</h3>
                 <p>If you have chosen to <strong>toast</strong> your Human users, plese provide a custom message less than 50 chars.</p>
                 <div class="code-block">
-                    <code>Example: 'You seem Human! :)'</code>
+                    <code>Example: 'You seem Human! :)</code>
+                </div>
+            </div>
+
+            <div class="option-card">
+                <h3>Entit.org Bot Research</h3>
+                <p>I agree to share my website visit data with Entitl Inc., USA.</p>
+                <div class="code-block">
+                    <code>Coming Soon!</code>
                 </div>
             </div>
         </div>
