@@ -157,7 +157,7 @@
         ].join('<br>');
         this.showToast(content, 'warning');
       }
-    } else {
+    } else if(botHandling.show_toast){
       this.showToast('You seem Human! :)', 'success');
     }
 
