@@ -143,8 +143,9 @@
     var botHandling = data.data.botHandling || this.config.fallbackBotHandling;
 
     // Handle bot detection based on mode
-    console.log("show_toast: " + botHandling.show_toast);
+    
     console.log("mode: " + botHandling.mode);
+    console.log("show_toast: " + botHandling.show_toast);
     console.log("human_text: " + botHandling.human_text);
 
     if (isBot) {
