@@ -1,7 +1,7 @@
 (function() {
   // Default configuration
   var DEFAULT_CONFIG = {
-    apiUrl: 'https://us-central1-pixel-432500.cloudfunctions.net/entitl-bots-tracker',
+    apiUrl: 'https://us-central1-pixel-432500.cloudfunctions.net/entitl-bot-tracker',
     retryAttempts: 1,
     retryDelay: 1000,
     timeout: 10000
