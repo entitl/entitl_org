@@ -146,7 +146,7 @@
     // Handle bot detection based on action
 
     console.log("action: " + botHandling.action);
-    console.log("human_text: " + botHandling.human_text);
+    console.log("message: " + botHandling.message);
 
     if (isBot) {
       var entitl_ua = data.request.headers.userAgent;
@@ -163,7 +163,7 @@
         this.showToast(content, 'warning');
       }
     } else if (botHandling.action === 'toast'){
-      this.showToast(botHandling.human_text, 'success');
+      this.showToast(botHandling.message, 'success');
     }
 
     return data;
