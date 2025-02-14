@@ -151,7 +151,7 @@
       } else {
         // Show bot detected toast
         var content = [
-          'You seem Bot-tish! Try https://entitl.ai',
+          'You seem Bot-like! Try https://entitl.ai',
           'Confidence: ' + (detection.confidence * 100).toFixed(1) + '%',
           'User Agent: ' + entitl_ua,
           'IP Match: ' + (detection.ipMatch ? 'Yes' : 'No')
@@ -160,7 +160,7 @@
       }
     } else if(botHandling.show_toast){
       console.log("show_toast: " + botHandling.show_toast);
-      this.showToast('You seem Human! :)', 'success');
+      this.showToast(botHandling.human_text, 'success');
     }
 
     return data;
