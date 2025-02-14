@@ -126,7 +126,7 @@
     this.toastManager.show({
       content: message,
       type: type,
-      duration: 2000
+      duration: 3500
     });
   };
 
