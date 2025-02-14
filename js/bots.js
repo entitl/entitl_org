@@ -149,19 +149,12 @@
     console.log("message: " + botHandling.message);
 
     if (isBot) {
-      var entitl_ua = data.request.headers.userAgent;
-      if (botHandling.action === 'redirect') {
-        window.location.href = 'https://entitl.ai/?entitl_ua=' + entitl_ua;
-      } else if (botHandling.action === 'toast'){
-        // Show bot detected toast
-        var content = [
-          'You seem Bot-like! Try https://entitl.ai',
-          'Confidence: ' + (detection.confidence * 100).toFixed(1) + '%',
-          'User Agent: ' + entitl_ua,
-          'IP Match: ' + (detection.ipMatch ? 'Yes' : 'No')
-        ].join('<br>');
-        this.showToast(content, 'warning');
-      }
+      const entitl_ua = data.request.headers.userAgent;
+      const bot_params = new URLSearchParams({
+          entitl_ua: entitl_ua,
+          entitl_ip_match: detection.ipMatch
+      });
+      window.location.href = 'https://entitl.ai/?' + bot_params.toString();
     } else if (botHandling.action === 'toast'){
       this.showToast(botHandling.message, 'success');
     }
