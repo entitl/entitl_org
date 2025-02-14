@@ -6,14 +6,13 @@
     retryDelay: 1000,
     timeout: 10000,
     fallbackBotHandling: {
-      mode: 'toast' // Default mode is toast
+      mode: 'toast'
     }
   };
 
-  // Toast Manager Class
+  // Toast Manager Class - Only created when needed
   function ToastManager() {
     this.container = null;
-    this.createContainer();
   }
 
   ToastManager.prototype.createContainer = function() {
@@ -30,6 +29,9 @@
   };
 
   ToastManager.prototype.show = function(options) {
+    // Create container only when first toast needs to be shown
+    this.createContainer();
+
     var toast = document.createElement('div');
 
     // Toast styling
@@ -72,31 +74,27 @@
       toast.style.opacity = '0';
       setTimeout(function() {
         toast.remove();
-      }, 300);
-    }, 2000);
+        // Remove container if no toasts left
+        if (this.container && !this.container.hasChildNodes()) {
+          this.container.remove();
+          this.container = null;
+        }
+      }.bind(this), 300);
+    }.bind(this), 2000);
   };
+
   // Bot Detector Constructor
   function BotDetector(config) {
     this.config = Object.assign({}, DEFAULT_CONFIG, config || {});
-    this.toastManager = new ToastManager();
+    this.toastManager = null; // Initialize only when needed
   }
 
-  // Collect client information
+  // Collect client information - removed screen and window parameters
   BotDetector.prototype.getClientInfo = function() {
     try {
       return {
         url: window.location.href,
         referrer: document.referrer,
-        screen: {
-          width: window.screen.width,
-          height: window.screen.height,
-          colorDepth: window.screen.colorDepth,
-          pixelRatio: window.devicePixelRatio
-        },
-        window: {
-          innerWidth: window.innerWidth,
-          innerHeight: window.innerHeight
-        },
         navigator: {
           language: navigator.language,
           languages: navigator.languages,
@@ -114,11 +112,25 @@
       console.error('Error collecting client info:', error);
       return {
         url: window.location.href,
+        referrer: document.referrer,
         timestamp: new Date().toISOString(),
         error: 'Failed to collect complete client info'
       };
     }
   };
+
+  // Show toast - creates ToastManager only when needed
+  BotDetector.prototype.showToast = function(message, type) {
+    if (!this.toastManager) {
+      this.toastManager = new ToastManager();
+    }
+    this.toastManager.show({
+      content: message,
+      type: type,
+      duration: 2000
+    });
+  };
+
   // Handle bot detection result
   BotDetector.prototype.handleDetectionResult = function(data) {
     // Validate response
@@ -130,52 +142,29 @@
     // Check if bot is detected
     var isBot = data.data.isBot;
     var detection = data.data.detection || {};
-
-    // Determine bot handling mode
     var botHandling = data.data.botHandling || this.config.fallbackBotHandling;
 
     // Handle bot detection based on mode
     if (isBot) {
       if (botHandling.mode === 'redirect') {
-        // Hardcoded redirect URL when server specifies redirect
-        this.redirectPage(detection);
+        window.location.href = 'https://entitl.ai';
       } else {
-        // Default to toast
-        this.showBotDetectedToast(detection);
+        // Show bot detected toast
+        var content = [
+          'You seem Bot-tish! Try https://entitl.ai',
+          'Confidence: ' + (detection.confidence * 100).toFixed(1) + '%',
+          'User Agent Match: ' + (detection.userAgentMatch ? 'Yes' : 'No'),
+          'IP Match: ' + (detection.ipMatch ? 'Yes' : 'No')
+        ].join('<br>');
+        this.showToast(content, 'warning');
       }
     } else {
-      // Log successful human detection
       this.showToast('You seem Human! :)', 'success');
     }
 
     return data;
   };
 
-  // Redirect page for bot detection
-  BotDetector.prototype.redirectPage = function() {
-    window.location.href = 'https://entitl.ai';
-  };
-
-  // Show bot detected toast
-  BotDetector.prototype.showBotDetectedToast = function(detection) {
-    var content = [
-      'You seem Bot-tish! Try https://entitl.ai',
-      'Confidence: ' + (detection.confidence * 100).toFixed(1) + '%',
-      'User Agent Match: ' + (detection.userAgentMatch ? 'Yes' : 'No'),
-      'IP Match: ' + (detection.ipMatch ? 'Yes' : 'No')
-    ].join('<br>');
-
-    this.showToast(content, 'warning');
-  };
-
-  // Generic toast method
-  BotDetector.prototype.showToast = function(message, type) {
-    this.toastManager.show({
-      content: message,
-      type: type,
-      duration: 2000 // 2 seconds as requested
-    });
-  };
   // Bot detection method with retry mechanism
   BotDetector.prototype.checkForBot = function() {
     var self = this;
@@ -208,13 +197,11 @@
         console.warn('Bot detection attempt ' + attempts + ' failed:', error);
 
         if (attempts < maxAttempts) {
-          // Retry with exponential backoff
           return new Promise(function(resolve) {
             setTimeout(resolve, self.config.retryDelay * attempts);
           }).then(attemptDetection);
         }
 
-        // Log final error if all attempts fail
         self.showToast('Bot detection failed', 'error');
         throw error;
       });
@@ -226,12 +213,9 @@
   // Initialize bot detector
   function initBotDetector(config) {
     var botDetector = new BotDetector(config);
-
-    // Start bot detection
     botDetector.checkForBot().catch(function(error) {
       console.error('Bot detection initialization failed:', error);
     });
-
     return botDetector;
   }
 
