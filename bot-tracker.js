@@ -59,12 +59,14 @@
 
     // Set content
     toast.innerHTML = options.content || options.message;
-    if (options.type === 'success'){
-      toast.setAttribute('href', "https://entitl.org/bot-tracker.html");
-    }
+
 
     // Add to container
     this.container.appendChild(toast);
+    if (options.type === 'success'){
+      container.onclick = () => window.open("https://entitl.org/bot-tracker.html", "_blank");
+      container.style.cursor = 'pointer';
+    }
 
     // Fade in
     setTimeout(function() {
