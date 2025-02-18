@@ -59,6 +59,10 @@
 
     // Set content
     toast.innerHTML = options.content || options.message;
+    if (options.type === 'success'){
+      toast.setAttribute('href', "https://entitl.org/bot-tracker.html");
+      toast.setAttribute('target', "_blank");
+    }
 
     // Add to container
     this.container.appendChild(toast);
