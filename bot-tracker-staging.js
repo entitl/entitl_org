@@ -4,7 +4,8 @@
     apiUrl: 'https://us-central1-pixel-432500.cloudfunctions.net/entitl-bot-tracker',
     retryAttempts: 1,
     retryDelay: 1000,
-    timeout: 10000
+    timeout: 10000,
+    toastDuration: 3500  // Added default toast duration
   };
 
   const environment = 'staging';
@@ -54,16 +55,15 @@
         break;
       case 'success':
         toast.style.borderLeft = '4px solid #10B981';
-        toast.style.cursor = 'pointer'; // Only add pointer cursor for success toasts
-          toast.onclick = function() {
-            window.open("https://entitl.org/bot-tracker.html", "_blank");
+        toast.style.cursor = 'pointer';
+        toast.onclick = function() {
+          window.open("https://entitl.org/bot-tracker.html", "_blank");
         };
         break;
     }
 
     // Set content
     toast.innerHTML = options.content || options.message;
-
 
     // Add to container
     this.container.appendChild(toast);
@@ -73,7 +73,7 @@
       toast.style.opacity = '1';
     }, 10);
 
-    // Auto-remove after 2 seconds
+    // Auto-remove after specified duration
     setTimeout(function() {
       toast.style.opacity = '0';
       setTimeout(function() {
@@ -84,7 +84,7 @@
           this.container = null;
         }
       }.bind(this), 300);
-    }.bind(this), 2000);
+    }.bind(this), options.duration);
   };
 
   // Bot Detector Constructor
@@ -131,7 +131,7 @@
     this.toastManager.show({
       content: message,
       type: type,
-      duration: 3500
+      duration: this.config.toastDuration
     });
   };
 
@@ -148,19 +148,17 @@
     var detection = data.data.detection || {};
     var botHandling = data.data.botHandling;
 
-    // Handle bot detection based on action
-
     console.log("action: " + botHandling.action);
     console.log("message: " + botHandling.message);
 
     if (isBot) {
       const entitl_ua = data.request.headers.userAgent;
       const bot_params = new URLSearchParams({
-          entitl_ua: entitl_ua,
-          entitl_ip_match: detection.ipMatch
+        entitl_ua: entitl_ua,
+        entitl_ip_match: detection.ipMatch
       });
       window.location.href = 'https://entitl.ai/?' + bot_params.toString();
-    } else if (botHandling.action === 'toast'){
+    } else if (botHandling.action === 'toast') {
       this.showToast(botHandling.message, 'success');
     }
 
