@@ -54,10 +54,10 @@
         break;
       case 'success':
         toast.style.borderLeft = '4px solid #10B981';
-        // toast.style.cursor = 'pointer'; // Only add pointer cursor for success toasts
-        //   toast.onclick = function() {
-        //     window.open("https://entitl.org/bot-tracker.html", "_blank");
-        // };
+        toast.style.cursor = 'pointer'; // Only add pointer cursor for success toasts
+          toast.onclick = function() {
+            window.open("https://entitl.org/bot-tracker.html", "_blank");
+        };
         break;
     }
 
