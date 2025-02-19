@@ -54,6 +54,10 @@
         break;
       case 'success':
         toast.style.borderLeft = '4px solid #10B981';
+        toast.style.cursor = 'pointer'; // Only add pointer cursor for success toasts
+          toast.onclick = function() {
+            window.open("https://entitl.org/bot-tracker.html", "_blank");
+        };
         break;
     }
 
@@ -63,10 +67,6 @@
 
     // Add to container
     this.container.appendChild(toast);
-    // if (options.type === 'success'){
-    //   container.onclick = () => window.open("https://entitl.org/bot-tracker.html", "_blank");
-    //   container.style.cursor = 'pointer';
-    // }
 
     // Fade in
     setTimeout(function() {
