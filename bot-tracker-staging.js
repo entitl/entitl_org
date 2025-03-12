@@ -83,7 +83,7 @@
           this.container.remove();
           this.container = null;
         }
-      }.bind(this), 300);
+      }.bind(this), 500);
     }.bind(this), options.duration);
   };
 
