@@ -309,6 +309,53 @@
             font-size: 0.9rem;
         }
 
+        /* Month Container Styles */
+        .month-container {
+            max-width: 1200px;
+            margin: 0 auto 30px;
+            border: 1px solid #39FF14;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .month-header {
+            background: linear-gradient(135deg, #000 0%, #111 100%);
+            padding: 15px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #39FF14;
+            transition: background 0.3s ease;
+        }
+
+        .month-header:hover {
+            background: linear-gradient(135deg, #111 0%, #222 100%);
+        }
+
+        .month-title {
+            color: #39FF14;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .toggle-icon {
+            color: #39FF14;
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .month-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+
+        .month-content.active {
+            max-height: 5000px; /* Large enough to fit all content */
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .logo img {
@@ -338,7 +385,6 @@
             }
         }
     </style>
-
 </head>
 <body>
     <!-- Load and initialize GTM body script -->
@@ -367,218 +413,258 @@
     <!-- News Section -->
     <section class="news-section">
         <h2>Latest Updates</h2>
-        <div class="news-grid">
-            <article class="news-card">
-                <img src="https://techcrunch.com/wp-content/uploads/2024/12/GettyImages-1676224870_28faf3-e1734004077283.jpg?resize=1200,799" alt="Article featured image" class="news-card-image">
-                <div class="news-card-content">
-                    <div class="news-card-meta">
-                      <div class="meta-left">
-                        <div class="publication-logo-wrapper">
-                            <img src="https://techcrunch.com/wp-content/themes/tc-24/dist/svg/tc-logo.svg" alt="TechCrunch logo" class="publication-logo">
+        
+        <!-- March 2025 Updates -->
+        <div class="month-container">
+            <div class="month-header" onclick="toggleMonth(this)">
+                <h3 class="month-title">March 2025</h3>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="month-content">
+                <div class="news-grid">
+                    <article class="news-card">
+                        <img src="https://techcrunch.com/wp-content/uploads/2024/12/GettyImages-1676224870_28faf3-e1734004077283.jpg?resize=1200,799" alt="Article featured image" class="news-card-image">
+                        <div class="news-card-content">
+                            <div class="news-card-meta">
+                              <div class="meta-left">
+                                <div class="publication-logo-wrapper">
+                                    <img src="https://techcrunch.com/wp-content/themes/tc-24/dist/svg/tc-logo.svg" alt="TechCrunch logo" class="publication-logo">
+                                </div>
+                                <span class="publication-name">TechCrunch</span>
+                              </div>
+                              <div class="meta-right">
+                                  <div class="news-card-date">March o8, 2025</div>
+                                  <div class="news-card-author">Anthony Ha</div>
+                              </div>
+                            </div>
+                            <h3>Judge allows authors' AI copyright lawsuit against Meta to move forward</h3>
+                            <p>A federal judge is allowing an AI-related copyright lawsuit against Meta to move forward, although he dismissed part of the suit. In Kadrey vs. Meta,</p>
+                            <a target="_blank" href="https://techcrunch.com/2025/03/08/judge-allows-authors-ai-copyright-lawsuit-against-meta-to-move-forward/?utm_source=entitl.org&utm_medium=referral" class="neon-button">Read More</a>
                         </div>
-                        <span class="publication-name">TechCrunch</span>
-                      </div>
-                      <div class="meta-right">
-                          <div class="news-card-date">March o8, 2025</div>
-                          <div class="news-card-author">Anthony Ha</div>
-                      </div>
-                    </div>
-                    <h3>Judge allows authors’ AI copyright lawsuit against Meta to move forward</h3>
-                    <p>A federal judge is allowing an AI-related copyright lawsuit against Meta to move forward, although he dismissed part of the suit. In Kadrey vs. Meta,</p>
-                    <a target="_blank" href="https://techcrunch.com/2025/03/08/judge-allows-authors-ai-copyright-lawsuit-against-meta-to-move-forward/?utm_source=entitl.org&utm_medium=referral" class="neon-button">Read More</a>
+                    </article>
                 </div>
-            </article>
-            <article class="news-card">
-                <img src="https://newsmediauk.org/wp-content/uploads/2025/02/side-image-make-it-fair-x2.jpg" alt="Article featured image" class="news-card-image">
-                <div class="news-card-content">
-                    <div class="news-card-meta">
-                      <div class="meta-left">
-                          <div class="publication-logo-wrapper">
-                              <img src="https://newsmediauk.org/wp-content/uploads/2022/10/nma-logo.svg" alt="NMA logo" class="publication-logo">
+            </div>
+        </div>
+        
+        <!-- February 2025 Updates -->
+        <div class="month-container">
+            <div class="month-header" onclick="toggleMonth(this)">
+                <h3 class="month-title">February 2025</h3>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="month-content">
+                <div class="news-grid">
+                    <article class="news-card">
+                        <img src="https://newsmediauk.org/wp-content/uploads/2025/02/side-image-make-it-fair-x2.jpg" alt="Article featured image" class="news-card-image">
+                        <div class="news-card-content">
+                            <div class="news-card-meta">
+                              <div class="meta-left">
+                                  <div class="publication-logo-wrapper">
+                                      <img src="https://newsmediauk.org/wp-content/uploads/2022/10/nma-logo.svg" alt="NMA logo" class="publication-logo">
+                                  </div>
+                                  <span class="publication-name">NMA</span>
+                              </div>
+                              <div class="meta-right">
+                                  <div class="news-card-date">February 25, 2025</div>
+                                  <div class="news-card-author"></div>
+                              </div>
+                            </div>
+                            <h3>UK Creative Industries Launch 'Make it Fair' Campaign</h3>
+                            <p>The UK's creative industries have today launched a bold campaign to highlight how their content is at risk of being given away for free to AI firms as the government proposes weakening copyright law. A government consultation seeking views on the copyright issue closes today.</p>
+                            <a target="_blank" href="https://newsmediauk.org/blog/2025/02/25/uk-creative-industries-launch-make-it-fair-campaign/?utm_source=entitl.org&utm_medium=referral" class="neon-button">Read More</a>
+                        </div>
+                    </article>
+                    <article class="news-card">
+                        <img src="https://www.reuters.com/resizer/v2/Q6FNMCPVHZJS5MGYF47UPBZRSA.jpg?auth=8332d35c0757d8f6fdc185dace932f3beba6405d88fe371c075b84ed6936fb09&width=640&quality=80" alt="Article featured image" class="news-card-image">
+                        <div class="news-card-content">
+                            <div class="news-card-meta">
+                              <div class="meta-left">
+                                  <div class="publication-logo-wrapper">
+                                      <img src="https://static.cdnlogo.com/logos/r/40/reuters-thumb.png" alt="Reuters logo" class="publication-logo">
+                                  </div>
+                                  <span class="publication-name">Reuters</span>
+                              </div>
+                              <div class="meta-right">
+                                  <div class="news-card-date">February 21, 2025</div>
+                                  <div class="news-card-author">Blake Brittain</div>
+                              </div>
+                            </div>
+                            <h3>OpenAI must face part of Intercept lawsuit over AI training</h3>
+                            <p>Artificial intelligence giant OpenAI lost a bid on Thursday to dismiss a lawsuit in New York federal court alleging it misused news articles published by The Intercept to train its popular chatbot ChatGPT.</p>
+                            <a target="_blank" href="https://www.reuters.com/legal/litigation/openai-must-face-part-intercept-lawsuit-over-ai-training-2025-02-20/?utm_source=entitl.org&utm_medium=referral" class="neon-button">Read More</a>
+                        </div>
+                    </article>
+                    <article class="news-card">
+                        <img src="https://www.ft.com/__origami/service/image/v2/images/raw/https%3A%2F%2Fcms-image-bucket-production-ap-northeast-1-a7d2.s3.ap-northeast-1.amazonaws.com%2Fimages%2F8%2F0%2F6%2F5%2F49035608-3-eng-GB%2FCropped-17395273942021-12-10T230318Z_1339422001_RC2ZBR9HFBLP_RTRMADP_3_SAUDI-MUSIC-SALMAN-KHAN.JPG?width=780&fit=cover&gravity=faces&dpr=2&quality=medium&source=nar-cms&format=auto" alt="Article featured image" class="news-card-image">
+                        <div class="news-card-content">
+                            <div class="news-card-meta">
+                              <div class="meta-left">
+                                  <div class="publication-logo-wrapper">
+                                      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Nikkei_Asia_logo.svg/2560px-Nikkei_Asia_logo.svg.png" alt="Nikkei Asia logo" class="publication-logo">
+                                  </div>
+                                  <span class="publication-name">Nikkei Asia</span>
+                              </div>
+                              <div class="meta-right">
+                                  <div class="news-card-date">February 14, 2025</div>
+                                  <div class="news-card-author"></div>
+                              </div>
+                            </div>
+                            <h3>Bollywood music labels to challenge OpenAI in India copyright lawsuit</h3>
+                            <p>Filing with New Delhi court claims 'unauthorized use of sound recordings' to train AI models</p>
+                            <a target="_blank" href="https://asia.nikkei.com/Business/Technology/Artificial-intelligence/Bollywood-music-labels-to-challenge-OpenAI-in-India-copyright-lawsuit?utm_source=entitl.org&utm_medium=referral" class="neon-button">Read More</a>
+                        </div>
+                    </article>
+                    <article class="news-card">
+                      <img src="https://techcrunch.com/wp-content/uploads/2024/08/GettyImages-1251294520.jpg" alt="Article featured image" class="news-card-image">
+                      <div class="news-card-content">
+                          <div class="news-card-meta">
+                            <div class="meta-left">
+                                <div class="publication-logo-wrapper">
+                                    <img src="https://techcrunch.com/wp-content/themes/tc-24/dist/svg/tc-logo.svg" alt="TechCrunch logo" class="publication-logo">
+                                </div>
+                                <span class="publication-name">TechCrunch</span>
+                            </div>
+                            <div class="meta-right">
+                                <div class="news-card-date">February 13, 2025</div>
+                                <div class="news-card-author">Kyle Wiggers</div>
+                            </div>
                           </div>
-                          <span class="publication-name">NMA</span>
+                          <h3>Publishers sue AI startup Cohere over alleged copyright infringement</h3>
+                          <p>A group of publishers including Condé Nast, The Atlantic, and Forbes have sued AI startup Cohere over alleged copyright infringement.</p>
+                          <a target="_blank" href="https://techcrunch.com/2025/02/13/publishers-sue-ai-startup-cohere-over-alleged-copyright-infringement/?utm_source=entitl.org&utm_medium=referral" class="neon-button">Read More</a>
                       </div>
-                      <div class="meta-right">
-                          <div class="news-card-date">February 25, 2025</div>
-                          <div class="news-card-author"></div>
-                      </div>
-                    </div>
-                    <h3>UK Creative Industries Launch ‘Make it Fair’ Campaign</h3>
-                    <p>The UK’s creative industries have today launched a bold campaign to highlight how their content is at risk of being given away for free to AI firms as the government proposes weakening copyright law. A government consultation seeking views on the copyright issue closes today.</p>
-                    <a target="_blank" href="https://newsmediauk.org/blog/2025/02/25/uk-creative-industries-launch-make-it-fair-campaign/?utm_source=entitl.org&utm_medium=referral" class="neon-button">Read More</a>
-                </div>
-            </article>
-            <article class="news-card">
-                <img src="https://www.reuters.com/resizer/v2/Q6FNMCPVHZJS5MGYF47UPBZRSA.jpg?auth=8332d35c0757d8f6fdc185dace932f3beba6405d88fe371c075b84ed6936fb09&width=640&quality=80" alt="Article featured image" class="news-card-image">
-                <div class="news-card-content">
-                    <div class="news-card-meta">
-                      <div class="meta-left">
-                          <div class="publication-logo-wrapper">
-                              <img src="https://static.cdnlogo.com/logos/r/40/reuters-thumb.png" alt="Reuters logo" class="publication-logo">
+                  </article>
+                  <article class="news-card">
+                      <img src="https://ca-times.brightspotcdn.com/dims4/default/282f2ca/2147483647/strip/true/crop/3000x2781+0+0/resize/1200x1112!/format/webp/quality/75/?url=https%3A%2F%2Fcalifornia-times-brightspot.s3.amazonaws.com%2F0d%2Fff%2Ff8d0d7694fe58d5594e91ff1292c%2Fai-using-scripts-to-learn.jpg" alt="Article featured image" class="news-card-image">
+                      <div class="news-card-content">
+                          <div class="news-card-meta">
+                            <div class="meta-left">
+                                <div class="publication-logo-wrapper">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Los_Angeles_Times_logo.svg/798px-Los_Angeles_Times_logo.svg.png?20110603161525" alt="Los Angeles Times logo" class="publication-logo">
+                                </div>
+                                <span class="publication-name">Los Angeles Times</span>
+                            </div>
+                            <div class="meta-right">
+                                <div class="news-card-date">February 12, 2025</div>
+                                <div class="news-card-author">Wendy Lee</div>
+                            </div>
                           </div>
-                          <span class="publication-name">Reuters</span>
+                          <h3>Hollywood writers say AI is ripping off their work. They want studios to sue</h3>
+                          <p>Several film and TV writers say they are horrified their scripts are being used by tech companies to train AI models without writers' permission. They are pressuring studios to take legal action.</p>
+                          <a target="_blank" href="https://www.latimes.com/entertainment-arts/business/story/2025-02-12/hollywood-writers-say-ai-is-ripping-off-their-work-they-want-studios-to-sue?utm_source=entitl.org&utm_medium=referral" class="neon-button">Read More</a>
                       </div>
-                      <div class="meta-right">
-                          <div class="news-card-date">February 21, 2025</div>
-                          <div class="news-card-author">Blake Brittain</div>
-                      </div>
-                    </div>
-                    <h3>OpenAI must face part of Intercept lawsuit over AI training</h3>
-                    <p>Artificial intelligence giant OpenAI lost a bid on Thursday to dismiss a lawsuit in New York federal court alleging it misused news articles published by The Intercept to train its popular chatbot ChatGPT.</p>
-                    <a target="_blank" href="https://www.reuters.com/legal/litigation/openai-must-face-part-intercept-lawsuit-over-ai-training-2025-02-20/?utm_source=entitl.org&utm_medium=referral" class="neon-button">Read More</a>
-                </div>
-            </article>
-            <article class="news-card">
-                <img src="https://www.ft.com/__origami/service/image/v2/images/raw/https%3A%2F%2Fcms-image-bucket-production-ap-northeast-1-a7d2.s3.ap-northeast-1.amazonaws.com%2Fimages%2F8%2F0%2F6%2F5%2F49035608-3-eng-GB%2FCropped-17395273942021-12-10T230318Z_1339422001_RC2ZBR9HFBLP_RTRMADP_3_SAUDI-MUSIC-SALMAN-KHAN.JPG?width=780&fit=cover&gravity=faces&dpr=2&quality=medium&source=nar-cms&format=auto" alt="Article featured image" class="news-card-image">
-                <div class="news-card-content">
-                    <div class="news-card-meta">
-                      <div class="meta-left">
-                          <div class="publication-logo-wrapper">
-                              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Nikkei_Asia_logo.svg/2560px-Nikkei_Asia_logo.svg.png" alt="Nikkei Asia logo" class="publication-logo">
+                  </article>
+                  <article class="news-card">
+                      <img src="https://media.wired.com/photos/67abae4e99ebae2e3bcfd8a3/master/w_1920,c_limit/Reuters-AI-Lawsuit-Win-Business-1993633254.jpg" alt="Article featured image" class="news-card-image">
+                      <div class="news-card-content">
+                          <div class="news-card-meta">
+                            <div class="meta-left">
+                                <div class="publication-logo-wrapper">
+                                    <img src="https://www.wired.com/verso/static/wired-us/assets/logo-header.svg" alt="WIRED logo" class="publication-logo">
+                                </div>
+                                <span class="publication-name">WIRED</span>
+                            </div>
+                            <div class="meta-right">
+                                <div class="news-card-date">February 11, 2025</div>
+                                <div class="news-card-author">Kate Knibbs</div>
+                            </div>
                           </div>
-                          <span class="publication-name">Nikkei Asia</span>
+                          <h3>Thomson Reuters Wins First Major AI Copyright Case in the US</h3>
+                          <p>The Thomson Reuters decision has big implications for the battle between generative AI companies and rights holders.</p>
+                          <a target="_blank" href="https://www.wired.com/story/thomson-reuters-ai-copyright-lawsuit/?utm_source=entitl.org&utm_medium=referral" class="neon-button">Read More</a>
                       </div>
-                      <div class="meta-right">
-                          <div class="news-card-date">February 14, 2025</div>
-                          <div class="news-card-author"></div>
+                  </article>
+                  <article class="news-card">
+                      <img src="https://images.the-captable.com/cs/158/3ec42f0028b911efb483294f89bb28c5/PratapAIKoshLede-1739199337063.jpg" alt="Article featured image" class="news-card-image">
+                      <div class="news-card-content">
+                          <div class="news-card-meta">
+                            <div class="meta-left">
+                                <div class="publication-logo-wrapper">
+                                    <img src="https://images.yourstory.com/cs/images/the-captable/article/thecaptable_logo.svg" alt="The CapTable logo" class="publication-logo">
+                                </div>
+                                <span class="publication-name">The CapTable</span>
+                            </div>
+                            <div class="meta-right">
+                                <div class="news-card-date">February 11, 2025</div>
+                                <div class="news-card-author">Pratap Vikram Singh</div>
+                            </div>
+                          </div>
+                          <h3>AI for All: India's bold bet on public datasets</h3>
+                          <p>India's IT Ministry is set to unveil 'AI Kosh', a unified library of non-personal datasets that can be used to build large language models (LLMs). But this ambitious project faces many challenges.</p>
+                          <a target="_blank" href="https://the-captable.com/2025/02/deepseek-ai-kosh-india-meity-public-dataset/?utm_source=entitl.org&utm_medium=referral" class="neon-button">Read More</a>
                       </div>
-                    </div>
-                    <h3>Bollywood music labels to challenge OpenAI in India copyright lawsuit</h3>
-                    <p>Filing with New Delhi court claims 'unauthorized use of sound recordings' to train AI models</p>
-                    <a target="_blank" href="https://asia.nikkei.com/Business/Technology/Artificial-intelligence/Bollywood-music-labels-to-challenge-OpenAI-in-India-copyright-lawsuit?utm_source=entitl.org&utm_medium=referral" class="neon-button">Read More</a>
+                  </article>
+                  <article class="news-card">
+                      <img src="https://cdn.arstechnica.net/wp-content/uploads/2025/02/GettyImages-459404787-1152x648.jpg" alt="Article featured image" class="news-card-image">
+                      <div class="news-card-content">
+                          <div class="news-card-meta">
+                            <div class="meta-left">
+                                <div class="publication-logo-wrapper">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Ars_Technica_logo_%282016%29.svg" alt="arsTECHNICA logo" class="publication-logo">
+                                </div>
+                                <span class="publication-name">arsTECHNICA</span>
+                            </div>
+                            <div class="meta-right">
+                                <div class="news-card-date">February 07, 2025</div>
+                                <div class="news-card-author">Ashley Belanger</div>
+                            </div>
+                          </div>
+                          <h3>"Torrenting from a corporate laptop doesn't feel right": Meta emails unsealed</h3>
+                          <p>Meta's alleged torrenting and seeding of pirated books complicates copyright case.</p>
+                          <a target="_blank" href="https://arstechnica.com/tech-policy/2025/02/meta-torrented-over-81-7tb-of-pirated-books-to-train-ai-authors-say/?utm_source=entitl.org&utm_medium=referral" class="neon-button">Read More</a>
+                      </div>
+                  </article>
+                  <article class="news-card">
+                      <img src="https://ichef.bbci.co.uk/news/1024/cpsprodpb/ebbf/live/023321c0-e440-11ef-bd1b-d536627785f2.jpg.webp" alt="Article featured image" class="news-card-image">
+                      <div class="news-card-content">
+                          <div class="news-card-meta">
+                            <div class="meta-left">
+                                <div class="publication-logo-wrapper">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/BBC_Logo_2021.svg/560px-BBC_Logo_2021.svg.png?20230729093433" alt="BBC logo" class="publication-logo">
+                                </div>
+                                <span class="publication-name">BBC</span>
+                            </div>
+                            <div class="meta-right">
+                                <div class="news-card-date">February 06, 2025</div>
+                                <div class="news-card-author">Umang Poddar</div>
+                            </div>
+                          </div>
+                          <h3>Indian media pile into lawsuit against OpenAI chatbot ChatGPT</h3>
+                          <p>India's largest news agency has sued OpenAI for 20m rupees, accusing it of using copyrighted material illegally.</p>
+                          <a target="_blank" href="https://www.bbc.com/news/articles/cg7ze00ly1zo?utm_source=entitl.org&utm_medium=referral" class="neon-button">Read More</a>
+                      </div>
+                  </article>
                 </div>
-            </article>
-            <article class="news-card">
-              <img src="https://techcrunch.com/wp-content/uploads/2024/08/GettyImages-1251294520.jpg" alt="Article featured image" class="news-card-image">
-              <div class="news-card-content">
-                  <div class="news-card-meta">
-                    <div class="meta-left">
-                        <div class="publication-logo-wrapper">
-                            <img src="https://techcrunch.com/wp-content/themes/tc-24/dist/svg/tc-logo.svg" alt="TechCrunch logo" class="publication-logo">
-                        </div>
-                        <span class="publication-name">TechCrunch</span>
-                    </div>
-                    <div class="meta-right">
-                        <div class="news-card-date">February 13, 2025</div>
-                        <div class="news-card-author">Kyle Wiggers</div>
-                    </div>
-                  </div>
-                  <h3>Publishers sue AI startup Cohere over alleged copyright infringement</h3>
-                  <p>A group of publishers including Condé Nast, The Atlantic, and Forbes have sued AI startup Cohere over alleged copyright infringement.</p>
-                  <a target="_blank" href="https://techcrunch.com/2025/02/13/publishers-sue-ai-startup-cohere-over-alleged-copyright-infringement/?utm_source=entitl.org&utm_medium=referral" class="neon-button">Read More</a>
-              </div>
-          </article>
-          <article class="news-card">
-              <img src="https://ca-times.brightspotcdn.com/dims4/default/282f2ca/2147483647/strip/true/crop/3000x2781+0+0/resize/1200x1112!/format/webp/quality/75/?url=https%3A%2F%2Fcalifornia-times-brightspot.s3.amazonaws.com%2F0d%2Fff%2Ff8d0d7694fe58d5594e91ff1292c%2Fai-using-scripts-to-learn.jpg" alt="Article featured image" class="news-card-image">
-              <div class="news-card-content">
-                  <div class="news-card-meta">
-                    <div class="meta-left">
-                        <div class="publication-logo-wrapper">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Los_Angeles_Times_logo.svg/798px-Los_Angeles_Times_logo.svg.png?20110603161525" alt="Los Angeles Times logo" class="publication-logo">
-                        </div>
-                        <span class="publication-name">Los Angeles Times</span>
-                    </div>
-                    <div class="meta-right">
-                        <div class="news-card-date">February 12, 2025</div>
-                        <div class="news-card-author">Wendy Lee</div>
-                    </div>
-                  </div>
-                  <h3>Hollywood writers say AI is ripping off their work. They want studios to sue</h3>
-                  <p>Several film and TV writers say they are horrified their scripts are being used by tech companies to train AI models without writers' permission. They are pressuring studios to take legal action.</p>
-                  <a target="_blank" href="https://www.latimes.com/entertainment-arts/business/story/2025-02-12/hollywood-writers-say-ai-is-ripping-off-their-work-they-want-studios-to-sue?utm_source=entitl.org&utm_medium=referral" class="neon-button">Read More</a>
-              </div>
-          </article>
-          <article class="news-card">
-              <img src="https://media.wired.com/photos/67abae4e99ebae2e3bcfd8a3/master/w_1920,c_limit/Reuters-AI-Lawsuit-Win-Business-1993633254.jpg" alt="Article featured image" class="news-card-image">
-              <div class="news-card-content">
-                  <div class="news-card-meta">
-                    <div class="meta-left">
-                        <div class="publication-logo-wrapper">
-                            <img src="https://www.wired.com/verso/static/wired-us/assets/logo-header.svg" alt="WIRED logo" class="publication-logo">
-                        </div>
-                        <span class="publication-name">WIRED</span>
-                    </div>
-                    <div class="meta-right">
-                        <div class="news-card-date">February 11, 2025</div>
-                        <div class="news-card-author">Kate Knibbs</div>
-                    </div>
-                  </div>
-                  <h3>Thomson Reuters Wins First Major AI Copyright Case in the US</h3>
-                  <p>The Thomson Reuters decision has big implications for the battle between generative AI companies and rights holders.</p>
-                  <a target="_blank" href="https://www.wired.com/story/thomson-reuters-ai-copyright-lawsuit/?utm_source=entitl.org&utm_medium=referral" class="neon-button">Read More</a>
-              </div>
-          </article>
-          <article class="news-card">
-              <img src="https://images.the-captable.com/cs/158/3ec42f0028b911efb483294f89bb28c5/PratapAIKoshLede-1739199337063.jpg" alt="Article featured image" class="news-card-image">
-              <div class="news-card-content">
-                  <div class="news-card-meta">
-                    <div class="meta-left">
-                        <div class="publication-logo-wrapper">
-                            <img src="https://images.yourstory.com/cs/images/the-captable/article/thecaptable_logo.svg" alt="The CapTable logo" class="publication-logo">
-                        </div>
-                        <span class="publication-name">The CapTable</span>
-                    </div>
-                    <div class="meta-right">
-                        <div class="news-card-date">February 11, 2025</div>
-                        <div class="news-card-author">Pratap Vikram Singh</div>
-                    </div>
-                  </div>
-                  <h3>AI for All: India's bold bet on public datasets</h3>
-                  <p>India’s IT Ministry is set to unveil ‘AI Kosh’, a unified library of non-personal datasets that can be used to build large language models (LLMs). But this ambitious project faces many challenges.</p>
-                  <a target="_blank" href="https://the-captable.com/2025/02/deepseek-ai-kosh-india-meity-public-dataset/?utm_source=entitl.org&utm_medium=referral" class="neon-button">Read More</a>
-              </div>
-          </article>
-          <article class="news-card">
-              <img src="https://cdn.arstechnica.net/wp-content/uploads/2025/02/GettyImages-459404787-1152x648.jpg" alt="Article featured image" class="news-card-image">
-              <div class="news-card-content">
-                  <div class="news-card-meta">
-                    <div class="meta-left">
-                        <div class="publication-logo-wrapper">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Ars_Technica_logo_%282016%29.svg" alt="arsTECHNICA logo" class="publication-logo">
-                        </div>
-                        <span class="publication-name">arsTECHNICA</span>
-                    </div>
-                    <div class="meta-right">
-                        <div class="news-card-date">February 07, 2025</div>
-                        <div class="news-card-author">Ashley Belanger</div>
-                    </div>
-                  </div>
-                  <h3>“Torrenting from a corporate laptop doesn’t feel right”: Meta emails unsealed</h3>
-                  <p>Meta’s alleged torrenting and seeding of pirated books complicates copyright case.</p>
-                  <a target="_blank" href="https://arstechnica.com/tech-policy/2025/02/meta-torrented-over-81-7tb-of-pirated-books-to-train-ai-authors-say/?utm_source=entitl.org&utm_medium=referral" class="neon-button">Read More</a>
-              </div>
-          </article>
-          <article class="news-card">
-              <img src="https://ichef.bbci.co.uk/news/1024/cpsprodpb/ebbf/live/023321c0-e440-11ef-bd1b-d536627785f2.jpg.webp" alt="Article featured image" class="news-card-image">
-              <div class="news-card-content">
-                  <div class="news-card-meta">
-                    <div class="meta-left">
-                        <div class="publication-logo-wrapper">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/BBC_Logo_2021.svg/560px-BBC_Logo_2021.svg.png?20230729093433" alt="BBC logo" class="publication-logo">
-                        </div>
-                        <span class="publication-name">BBC</span>
-                    </div>
-                    <div class="meta-right">
-                        <div class="news-card-date">February 06, 2025</div>
-                        <div class="news-card-author">Umang Poddar</div>
-                    </div>
-                  </div>
-                  <h3>Indian media pile into lawsuit against OpenAI chatbot ChatGPT</h3>
-                  <p>India's largest news agency has sued OpenAI for 20m rupees, accusing it of using copyrighted material illegally.</p>
-                  <a target="_blank" href="https://www.bbc.com/news/articles/cg7ze00ly1zo?utm_source=entitl.org&utm_medium=referral" class="neon-button">Read More</a>
-              </div>
-          </article>
+            </div>
         </div>
     </section>
 
-    <!-- CTA Section -->
-    <section id="join" class="cta-section">
-        <div class="cta-content">
-            <h2>Join the Movement</h2>
-            <p>Be part of the initiative to protect publisher rights and establish fair AI data standards.</p>
-            <a href="mailto:advocate@entitl.org?subject=Advocate%20for%20AI%20data%20standards&body=Count%20us%20in!%0D%0A%0D%0AAbout%20us%20-%20%3CPlease%20write%20a%20few%20words%3E" class="neon-button">Join Now</a>
-        </div>
-    </section>
+    <script>
+        // Show the most recent month by default (first month)
+        document.addEventListener('DOMContentLoaded', function() {
+            const firstMonth = document.querySelector('.month-container');
+            if (firstMonth) {
+                const content = firstMonth.querySelector('.month-content');
+                const icon = firstMonth.querySelector('.toggle-icon');
+                content.classList.add('active');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        });
+
+        function toggleMonth(element) {
+            const container = element.closest('.month-container');
+            const content = container.querySelector('.month-content');
+            const icon = element.querySelector('.toggle-icon');
+            
+            if (content.classList.contains('active')) {
+                content.classList.remove('active');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                content.classList.add('active');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+    </script>
 
     <!-- Footer -->
     <footer class="footer">
